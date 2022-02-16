@@ -17,7 +17,7 @@ Router.get('/project_details/:id', (req, res) => {
   console.log('GET on All/project_details')
 })
 
-Router.get('/users', (req, res) => {
+Router.get('/user', (req, res) => {
   console.log(req.body)
   functions
     .findUsers(req.body.id)

@@ -8,6 +8,15 @@ const findUsers = id => {
     .query('SELECT * FROM users WHERE id = ?', [id])
     .then(([results]) => results[0])
 }
+
+const displayUsers = () => {
+  return db
+    .query(
+      'SELECT u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description, p.name, p.description, p.estimated_start_date, p.estimated_end_date, p.status FROM users as u LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
+    )
+    .then(([results]) => results)
+}
+
 /*
 const validate = (data, forCreation = true) => {
   const presence = forCreation ? 'required' : 'optional';
@@ -21,5 +30,6 @@ const validate = (data, forCreation = true) => {
 };
 */
 module.exports = {
-  findUsers
+  findUsers,
+  displayUsers
 }
