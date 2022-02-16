@@ -4,23 +4,37 @@ const functions = require('./models/functions')
 const Router = express.Router()
 
 //Obtenir les détails d'un projet
-Router.get('/project_details/:id', (req, res) => {
-  console.log(req.params)
-  const sql =
-    'SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, u.firstname, u.lastname, d.name FROM project AS p INNER JOIN users AS u INNER JOIN domain AS d ON d.id=p.domain_id AND u.id=p.users_id WHERE p.id=?;'
-  const value = [req.params.id]
-
-  connection.query(sql, value, (err, result) => {
-    if (err) throw err
-    return res.status(200).json(result)
-  })
-  console.log('GET on All/project_details')
+Router.get('/project_details', (req, res) => {
+  functions
+    .findProject(req.body.id)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Project not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving Project from database')
+    })
 })
 
-Router.get('/users', (req, res) => {
-  console.log(req.body)
+//Obtenir la liste des projets
+Router.get('/projects', (req, res) => {
   functions
-    .findUsers(req.body.id)
+    .projects()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Project not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving Project from database')
+    })
+})
+
+//Obtenir les infos d'un utilisateur
+Router.get('/user', (req, res) => {
+  functions
+    .findUser(req.body.id)
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('User not found')
@@ -28,6 +42,34 @@ Router.get('/users', (req, res) => {
     .catch(err => {
       console.error(err)
       res.status(500).send('Error retrieving user from database')
+    })
+})
+
+//Avoir toutes les annonces de tous les utilisateurs
+Router.get('/annonces_all_users', (req, res) => {
+  functions
+    .findAnnoncesUsers()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonce not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonce from database')
+    })
+})
+
+//Annonce de l'annonce d'un utilisateur
+Router.get('/annonce_user', (req, res) => {
+  functions
+    .findAnnonceUser(req.body.id)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonce not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonce from database')
     })
 })
 
