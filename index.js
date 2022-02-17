@@ -11,6 +11,7 @@ const all = require('./src/routes/all.js')
 
 const app = express()
 
+app.use('/public', express.static('public'))
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())

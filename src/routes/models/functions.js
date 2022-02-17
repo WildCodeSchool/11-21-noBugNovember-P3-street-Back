@@ -8,11 +8,18 @@ const findUsers = id => {
     .query('SELECT * FROM users WHERE id = ?', [id])
     .then(([results]) => results[0])
 }
+const findProjects = () => {
+  return db
+    .query(
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.localisation, p.team_completed, p.status, u.firstname, u.lastname, d.name FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id'
+    )
+    .then(([results]) => results)
+}
 
 const displayUsers = () => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description, p.name, p.description, p.estimated_start_date, p.estimated_end_date, p.status FROM users as u LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
+      'SELECT u.id, u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description, p.name, p.description, p.estimated_start_date, p.estimated_end_date, p.status FROM users as u LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
     )
     .then(([results]) => results)
 }
@@ -31,5 +38,6 @@ const validate = (data, forCreation = true) => {
 */
 module.exports = {
   findUsers,
-  displayUsers
+  displayUsers,
+  findProjects
 }

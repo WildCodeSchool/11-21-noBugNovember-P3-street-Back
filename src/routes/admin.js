@@ -49,7 +49,7 @@ Router.put('/projects/:id', (req, res) => {
 })
 
 // Bloquer ou débloquer un user
-Router.put('/users/:id', (req, res) => {
+Router.put('/block_users/:id', (req, res) => {
   const userId = req.params.id
   connection.query(
     'UPDATE users SET blocked = !blocked WHERE id = ?',
@@ -66,13 +66,14 @@ Router.put('/users/:id', (req, res) => {
     }
   )
 })
+
 //Modifier une annonce user
 Router.put('/users_annonces_update/:id', (req, res) => {
-  const { annonceId } = req.params.id
   const annoncePropsToUpdate = req.body
+  const annonceId = req.params.id
   connection.query(
     'UPDATE annonces_dispo SET ? WHERE id=?',
-    [annonceId, annoncePropsToUpdate],
+    [annoncePropsToUpdate, annonceId],
     (err, result) => {
       if (err) {
         console.log(err)
@@ -86,8 +87,28 @@ Router.put('/users_annonces_update/:id', (req, res) => {
   )
 })
 
+//Modifier une annonce projet
+Router.put('/projet_annonces_update/:id', (req, res) => {
+  const projetPropsToUpdate = req.body
+  const projetId = req.params.id
+  connection.query(
+    'UPDATE annonces_dispo SET ? WHERE id=?',
+    [projetPropsToUpdate, projetId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error updating an announcement')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`Announcement with id ${projectId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
+})
+
 //Supprimer l'annonce d'un user
-Router.delete('/users_annonces/:id', (req, res) => {
+Router.delete('/users_annonces_delete/:id', (req, res) => {
   const annonceId = req.params.id
   connection.query(
     'DELETE FROM annonces_dispo WHERE id=? ',
@@ -106,7 +127,7 @@ Router.delete('/users_annonces/:id', (req, res) => {
 })
 
 //Supprimer l'annonce d'un projet
-Router.delete('/projects_annonces/:id', (req, res) => {
+Router.delete('/projects_annonces_delete/:id', (req, res) => {
   const annonceId = req.params.id
   connection.query(
     'DELETE FROM search_mate WHERE id=?',
