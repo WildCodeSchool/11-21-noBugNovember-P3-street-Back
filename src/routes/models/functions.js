@@ -13,6 +13,14 @@ const findUser = id => {
     .then(([results]) => results[0])
 }
 
+const findProjects = () => {
+  return db
+    .query(
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.localisation, p.team_completed, p.status, u.firstname, u.lastname, d.name FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id'
+    )
+    .then(([results]) => results[0])
+}
+
 //Choisir un projet en particulier
 const findProject = id => {
   return db
@@ -94,6 +102,7 @@ SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.descripti
 
 module.exports = {
   findUser,
+  findProjects,
   findProject,
   findAnnoncesUsers,
   findAnnonceUser,
