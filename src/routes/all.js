@@ -45,6 +45,20 @@ Router.get('/user', (req, res) => {
     })
 })
 
+//Avoir tous les utilisateur sauf s'ils sont bloqués
+Router.get('/alluser', (req, res) => {
+  functions
+    .allusers(req.body.id)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('User not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving user from database')
+    })
+})
+
 //Avoir toutes les annonces de tous les utilisateurs
 Router.get('/annonces_all_users', (req, res) => {
   functions
@@ -59,8 +73,8 @@ Router.get('/annonces_all_users', (req, res) => {
     })
 })
 
-//Annonce de l'annonce d'un utilisateur
-Router.get('/annonce_user', (req, res) => {
+//Afficher les annonce des utilisateur
+Router.get('/annonce_users', (req, res) => {
   functions
     .findAnnonceUser(req.body.id)
     .then(user => {

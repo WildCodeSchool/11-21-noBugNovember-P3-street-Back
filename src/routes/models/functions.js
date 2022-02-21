@@ -13,6 +13,15 @@ const findUser = id => {
     .then(([results]) => results[0])
 }
 
+const allusers = id => {
+  return db
+    .query(
+      'SELECT u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0',
+      [id]
+    )
+    .then(([results]) => results)
+}
+
 //Choisir un projet en particulier
 const findProject = id => {
   return db
@@ -45,7 +54,7 @@ const projectshasuser = () => {
 const findAnnoncesUsers = () => {
   return db
     .query(
-      'SELECT ad.description, ad.date, u.avatar, u.firstname, u.lastname FROM annonces_dispo AS ad INNER JOIN users AS u ON u.id = ad.users_id'
+      'SELECT ad.description, ad.date, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify FROM annonces_dispo AS ad INNER JOIN users AS u ON u.id = ad.users_id'
     )
     .then(([results]) => results)
 }
@@ -99,5 +108,6 @@ module.exports = {
   findAnnonceUser,
   projects,
   projectshasuser,
-  validate
+  validate,
+  allusers
 }
