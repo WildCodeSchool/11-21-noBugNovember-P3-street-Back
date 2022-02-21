@@ -13,12 +13,20 @@ const findUser = id => {
     .then(([results]) => results[0])
 }
 
+const displayUsers = () => {
+  return db
+    .query(
+      'SELECT u.id, u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description_users,u.avatar, p.name, p.estimated_start_date, p.estimated_end_date, p.status, sd.art_name FROM users as u INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
+    )
+    .then(([results]) => results)
+}
+
 const findProjects = () => {
   return db
     .query(
       'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.localisation, p.team_completed, p.status, u.firstname, u.lastname, d.name FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id'
     )
-    .then(([results]) => results[0])
+    .then(([results]) => results)
 }
 
 //Choisir un projet en particulier
@@ -102,6 +110,7 @@ SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.descripti
 
 module.exports = {
   findUser,
+  displayUsers,
   findProjects,
   findProject,
   findAnnoncesUsers,
