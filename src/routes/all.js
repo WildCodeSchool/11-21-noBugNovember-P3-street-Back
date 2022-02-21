@@ -3,6 +3,20 @@ const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const Router = express.Router()
 
+//Obtenir la liste des projets
+Router.get('/projects', (req, res) => {
+  functions
+    .findProjects(req.body)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Projects not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving projects from database')
+    })
+})
+
 //Obtenir les détails d'un projet
 Router.get('/project_details', (req, res) => {
   functions

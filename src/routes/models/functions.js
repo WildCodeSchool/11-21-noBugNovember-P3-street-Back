@@ -103,6 +103,7 @@ SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.descripti
 
 module.exports = {
   findUser,
+  findProjects,
   findProject,
   findAnnoncesUsers,
   findAnnonceUser,
