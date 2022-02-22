@@ -60,7 +60,7 @@ Router.get('/user', (req, res) => {
 })
 
 //Avoir tous les utilisateur sauf s'ils sont bloqués
-Router.get('/alluser', (req, res) => {
+Router.get('/allusers', (req, res) => {
   functions
     .allusers(req.body.id)
     .then(user => {
@@ -99,6 +99,26 @@ Router.get('/annonce_users', (req, res) => {
       console.error(err)
       res.status(500).send('Error retrieving annonce from database')
     })
+})
+
+//Récupérer la liste des domaines
+Router.get('/domain', (req, res) => {
+  sql = 'SELECT * FROM domain'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
+//Récupérer la liste des sous-domaines
+Router.get('/subdomain', (req, res) => {
+  sql = 'SELECT * FROM sub_domain'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
 })
 
 module.exports = Router
