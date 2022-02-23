@@ -60,6 +60,65 @@ const findAnnonceUser = id => {
     .then(([results]) => results[0])
 }
 
+const deleteUserProject = id => {
+  return db 
+  .query(
+    'DELETE FROM project_has_users WHERE users_id=?;',
+    [id]
+  )
+  .then(([result]) => result.affectedRows !== 0);
+}
+
+const deleteUserAnnonceDispo = id => {
+  return db 
+  .query(
+    'DELETE FROM annonces_dispo WHERE users_id=?;',
+    [id]
+  )
+  .then(([result]) => result.affectedRows !== 0);
+}
+
+
+const deleteUserOnly = id => {
+  return db
+  .query(
+    'DELETE u FROM users AS u INNER JOIN project_has_users AS phu INNER JOIN project AS p INNER JOIN sub_domain_has_users AS sdhu INNER JOIN annonces_dispo AS ad ON u.id=p.users_id AND u.id=dhsd.users_id AND u.id=sdhu.users_id AND u.id=ad.users_id WHERE u.id=?',
+    [id]
+  )
+}
+
+const createProject = (body) => {
+  console.log(body)
+  const { name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked} = body;
+  return db
+  .query(
+    'INSERT INTO project (name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked]
+  )
+  .then(([result]) => result.affectedRows !== 0);
+ }
+
+ const validateProject = (params, forProject = true) => {
+  const presence1 = forProject ? 'required' : 'optional'
+  return Joi.object({
+    name: Joi.string().presence(presence1).required(),
+    logo: Joi.string().presence(presence1).required(),
+    estimated_start_date: Joi.number().max(45).presence(presence1).required(),
+    estimated_end_date: Joi.number().max(45).presence(presence1).required(),
+    localisation: Joi.string().max(45).required(),
+    team_completed: Joi.number.presence(presence1).required(),
+    status: Joi.number.presence(presence1).required(),
+    domain_id: Joi.number.presence(presence1).required(),
+    users_id: Joi.number.presence(presence1).required(),
+    bloked: Joi.number.presence(presence1).required(),
+   
+
+   
+   
+  }).validate(params, { abortEarly: false }).error
+}
+
+
 //Valider les données de la création d'un compte
 const validate = (data, forCreation = true) => {
   const presence = forCreation ? 'required' : 'optional'
@@ -84,7 +143,7 @@ const validate = (data, forCreation = true) => {
     forget_password: Joi.string().max(255).required(),
     available: Joi.boolean().required(),
     phoneVisibilty: Joi.boolean().required(),
-    emailVisibilty: Joi.boolean().required()
+    emailVisibilty: Joi.boolean().required(),
   }).validate(data, { abortEarly: false }).error
 }
 
@@ -99,5 +158,9 @@ module.exports = {
   findAnnonceUser,
   projects,
   projectshasuser,
-  validate
+  validate,
+  deleteUserProject,
+  deleteUserOnly,
+  createProject,
+  validateProject
 }
