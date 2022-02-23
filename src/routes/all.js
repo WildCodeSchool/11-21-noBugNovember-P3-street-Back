@@ -121,4 +121,17 @@ Router.get('/subdomain', (req, res) => {
   })
 })
 
+//Récupérer les correspondances entre domain et sub-domain
+Router.put('/domain_has_sub_domain', (req, res) => {
+  sql =
+    'SELECT d.domain, sd.art_name FROM domain AS d INNER JOIN sub_domain AS sd INNER JOIN domain_has_sub_domain AS dhsd ON d.id=dhsd.domain_id AND sd.id=dhsd.sub_domain_id WHERE d.domain=?'
+  const value = [req.body.domain]
+  console.log(req.body)
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
 module.exports = Router
