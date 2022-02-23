@@ -68,6 +68,14 @@ const findAnnonceUser = id => {
     .then(([results]) => results[0])
 }
 
+const findAnnoncesProjects = () => {
+  return db
+    .query(
+      'SELECT p.id, sm.role, sm.description, sm.date, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id ORDER BY p.id DESC;'
+    )
+    .then(([results]) => results)
+}
+
 //Valider les données de la création d'un compte
 const validate = (data, forCreation = true) => {
   const presence = forCreation ? 'required' : 'optional'
@@ -106,6 +114,7 @@ module.exports = {
   findProject,
   findAnnoncesUsers,
   findAnnonceUser,
+  findAnnoncesProjects,
   projects,
   projectshasuser,
   validate
