@@ -31,22 +31,21 @@ Router.get('/project_details', (req, res) => {
     })
 })
 
-//Obtenir la liste des projets
-Router.get('/projects', (req, res) => {
-  functions
-    .projects()
-    .then(user => {
-      if (user) res.json(user)
-      else res.status(404).send('Project not found')
-    })
-    .catch(err => {
-      console.error(err)
-      res.status(500).send('Error retrieving Project from database')
-    })
+//Obtenir la liste des projets crée par un user
+Router.put('/project_creator', (req, res) => {
+  console.log(req.body)
+  sql =
+    'SELECT p.name, p.logo, p.status, p.youtubelink, p.description, d.domain FROM project AS p INNER JOIN domain AS d ON p.domain_id=d.id WHERE p.users_id=?'
+  const value = [req.body.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
 })
 
 //Obtenir les infos d'un utilisateur
-Router.get('/user', (req, res) => {
+Router.put('/user', (req, res) => {
   functions
     .findUser(req.body.id)
     .then(user => {
@@ -62,7 +61,7 @@ Router.get('/user', (req, res) => {
 //Avoir tous les utilisateur sauf s'ils sont bloqués
 Router.get('/allusers', (req, res) => {
   functions
-    .allusers(req.body.id)
+    .allusers()
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('User not found')
@@ -79,11 +78,11 @@ Router.get('/annonces_all_users', (req, res) => {
     .findAnnoncesUsers()
     .then(user => {
       if (user) res.json(user)
-      else res.status(404).send('Annonce not found')
+      else res.status(404).send('Annonces not found')
     })
     .catch(err => {
       console.error(err)
-      res.status(500).send('Error retrieving annonce from database')
+      res.status(500).send('Error retrieving annonces from database')
     })
 })
 
@@ -126,6 +125,18 @@ Router.put('/domain_has_sub_domain', (req, res) => {
   sql =
     'SELECT d.domain, sd.art_name, sd.id FROM domain AS d INNER JOIN sub_domain AS sd INNER JOIN domain_has_sub_domain AS dhsd ON d.id=dhsd.domain_id AND sd.id=dhsd.sub_domain_id WHERE d.domain=?'
   const value = [req.body.domain]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
+//Obtenir la liste des projet où l'utilisateur a participé
+Router.put('/userhasprojects', (req, res) => {
+  sql =
+    'SELECT p.name, p.logo, p.status, d.domain FROM project AS p INNER JOIN domain AS d INNER JOIN users AS u INNER JOIN project_has_users AS phu ON u.id=phu.users_id AND phu.project_id=p.id AND p.domain_id=d.id WHERE u.id=?'
+  const value = [req.body.id]
 
   connection.query(sql, value, (err, result) => {
     if (err) throw err

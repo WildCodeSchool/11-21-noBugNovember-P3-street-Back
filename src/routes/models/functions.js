@@ -7,16 +7,17 @@ const db = connection.promise()
 const findUser = id => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
+      'SELECT u.firstname, u.lastname, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
       [id]
     )
     .then(([results]) => results[0])
 }
 
+// Liste de tous les utilisateurs
 const allusers = () => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users,sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
+      'SELECT u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
     )
     .then(([results]) => results)
 }
@@ -41,7 +42,7 @@ const projects = id => {
 }
 
 //Obtenir la liste des participants à un projet (hors créateur)
-const projectshasuser = () => {
+const projectshasusers = () => {
   return db
     .query(
       'SELECT p.name, p.logo, p.status, d.domain FROM project AS p INNER JOIN users AS u INNER JOIN domain AS d INNER JOIN project_has_users AS phu ON d.id=p.domain_id AND phu.users_id=u.id AND p.id=phu.project_id WHERE u.id=?'
@@ -96,10 +97,6 @@ const validate = (data, forCreation = true) => {
   }).validate(data, { abortEarly: false }).error
 }
 
-/*
-SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, u.firstname, u.lastname, d.domain FROM project AS p INNER JOIN users AS u INNER JOIN domain AS d INNER JOIN project_has_users AS phu ON d.id=p.domain_id AND u.id=p.users_id AND p.id=phu.project_id AND phu.users_id=u.id WHERE u.id=?;
-*/
-
 module.exports = {
   allusers,
   findUser,
@@ -107,6 +104,6 @@ module.exports = {
   findAnnoncesUsers,
   findAnnonceUser,
   projects,
-  projectshasuser,
+  projectshasusers,
   validate
 }
