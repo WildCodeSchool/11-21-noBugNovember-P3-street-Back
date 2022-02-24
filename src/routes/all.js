@@ -31,18 +31,17 @@ Router.get('/project_details', (req, res) => {
     })
 })
 
-//Obtenir la liste des projets
-Router.get('/projects', (req, res) => {
-  functions
-    .projects()
-    .then(user => {
-      if (user) res.json(user)
-      else res.status(404).send('Project not found')
-    })
-    .catch(err => {
-      console.error(err)
-      res.status(500).send('Error retrieving Project from database')
-    })
+//Obtenir la liste des projets crée par un user
+Router.put('/project_creator', (req, res) => {
+  console.log(req.body)
+  sql =
+    'SELECT p.name, p.logo, p.status, p.youtubelink, p.description, d.domain FROM project AS p INNER JOIN domain AS d ON p.domain_id=d.id WHERE p.users_id=?'
+  const value = [req.body.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
 })
 
 //Obtenir les infos d'un utilisateur
