@@ -25,7 +25,7 @@ const allusers = () => {
 const findProject = id => {
   return db
     .query(
-      'SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, u.firstname, u.lastname, d.domain FROM project AS p INNER JOIN users AS u INNER JOIN domain AS d ON d.id=p.domain_id AND u.id=p.users_id WHERE p.id=?',
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, p.youtubelink, d.domain, u.id, u.lastname , u.firstname, u.avatar FROM users AS u INNER JOIN project_has_users AS phu ON u.id=phu.users_id INNER JOIN project AS p ON p.id=phu.project_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id=?',
       [id]
     )
     .then(([results]) => results[0])
@@ -35,7 +35,7 @@ const findProject = id => {
 const projects = id => {
   return db
     .query(
-      'SELECT p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id DESC'
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id DESC'
     )
     .then(([results]) => results)
 }
@@ -71,7 +71,7 @@ const findAnnonceUser = id => {
 const findAnnoncesProjects = () => {
   return db
     .query(
-      'SELECT p.id, sm.role, sm.description, sm.date, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id ORDER BY p.id DESC;'
+      'SELECT p.id, sm.role, sm.description, sm.date, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation, d.domain FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id, sm.role DESC;'
     )
     .then(([results]) => results)
 }
