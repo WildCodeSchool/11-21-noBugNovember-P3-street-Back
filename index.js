@@ -11,11 +11,11 @@ const all = require('./src/routes/all.js')
 
 const app = express()
 
+app.use(cors())
 app.use('/public', express.static('public'))
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors())
 
 app.use('/admin', admin)
 app.use('/all', all)
