@@ -7,10 +7,18 @@ const db = connection.promise()
 const findUser = id => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
+      'SELECT u.firstname, u.lastname, u.available, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
       [id]
     )
     .then(([results]) => results[0])
+}
+
+const displayUsers = () => {
+  return db
+    .query(
+      'SELECT u.id, u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description_users,u.avatar, p.name, p.estimated_start_date, p.estimated_end_date, p.status, sd.art_name FROM users as u INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
+    )
+    .then(([results]) => results)
 }
 
 // Liste de tous les utilisateurs
@@ -108,6 +116,7 @@ const validate = (data, forCreation = true) => {
 module.exports = {
   allusers,
   findUser,
+  displayUsers,
   findProject,
   findAnnoncesUsers,
   findAnnonceUser,
