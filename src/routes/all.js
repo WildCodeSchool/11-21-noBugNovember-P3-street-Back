@@ -33,7 +33,6 @@ Router.get('/project_details', (req, res) => {
 
 //Obtenir la liste des projets crée par un user
 Router.put('/project_creator', (req, res) => {
-  console.log(req.body)
   sql =
     'SELECT p.name, p.logo, p.status, p.youtubelink, p.description, d.domain FROM project AS p INNER JOIN domain AS d ON p.domain_id=d.id WHERE p.users_id=?'
   const value = [req.body.id]
