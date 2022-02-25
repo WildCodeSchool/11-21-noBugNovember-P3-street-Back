@@ -17,7 +17,7 @@ const findUser = id => {
 const allusers = () => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
     )
     .then(([results]) => results)
 }
@@ -54,7 +54,7 @@ const projectshasusers = () => {
 const findAnnoncesUsers = () => {
   return db
     .query(
-      'SELECT d.domain, sd.art_name, ad.description_annonce, ad.date, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify FROM annonces_dispo AS ad INNER JOIN users AS u INNER JOIN domain AS D INNER JOIN sub_domain AS sd INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain_has_users AS sdhu ON u.id = ad.users_id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id AND u.id=uhd.users_id AND uhd.domain_id=d.id'
+      'SELECT d.domain, sd.art_name, ad.description_annonce, ad.date, u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify FROM annonces_dispo AS ad INNER JOIN users AS u INNER JOIN domain AS D INNER JOIN sub_domain AS sd INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain_has_users AS sdhu ON u.id = ad.users_id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id AND u.id=uhd.users_id AND uhd.domain_id=d.id'
     )
     .then(([results]) => results)
 }
