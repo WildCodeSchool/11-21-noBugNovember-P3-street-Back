@@ -45,7 +45,7 @@ Router.get('/project_users/:id', (req, res) => {
 //Obtenir la liste des projets crée par un user
 Router.put('/project_creator', (req, res) => {
   sql =
-    'SELECT p.name, p.logo, p.status, p.youtubelink, p.description, d.domain FROM project AS p INNER JOIN domain AS d ON p.domain_id=d.id WHERE p.users_id=?'
+    'SELECT p.id, p.name, p.logo, p.status, p.youtubelink, p.description, d.domain FROM project AS p INNER JOIN domain AS d ON p.domain_id=d.id WHERE p.users_id=?'
   const value = [req.body.id]
 
   connection.query(sql, value, (err, result) => {
@@ -158,7 +158,7 @@ Router.put('/domain_has_sub_domain', (req, res) => {
 //Obtenir la liste des projet où l'utilisateur a participé
 Router.put('/userhasprojects', (req, res) => {
   sql =
-    'SELECT p.name, p.logo, p.status, d.domain FROM project AS p INNER JOIN domain AS d INNER JOIN users AS u INNER JOIN project_has_users AS phu ON u.id=phu.users_id AND phu.project_id=p.id AND p.domain_id=d.id WHERE u.id=?'
+    'SELECT p.id, p.name, p.logo, p.status, d.domain FROM project AS p INNER JOIN domain AS d INNER JOIN users AS u INNER JOIN project_has_users AS phu ON u.id=phu.users_id AND phu.project_id=p.id AND p.domain_id=d.id WHERE u.id=?'
   const value = [req.body.id]
 
   connection.query(sql, value, (err, result) => {
