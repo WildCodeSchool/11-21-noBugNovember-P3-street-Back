@@ -29,7 +29,6 @@ Router.delete('/delete_account/:id', (req, res) => {
   })
 
   Router.post('/create_project', (req, res) => {
-    console.log('poulet')
     dbHelper
       .createProject(req.body)
       .then(created => {
