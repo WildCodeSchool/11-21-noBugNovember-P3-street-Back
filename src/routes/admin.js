@@ -14,6 +14,26 @@ Router.get('/read', (req, res) => {
 })
 */
 
+Router.get('/status_users', (req, res) => {
+  const sql = 'SELECT id,blocked,available FROM users'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).json(result)
+  })
+  console.log('GET on Admin/Status_Users')
+})
+
+Router.get('/status_projects', (req, res) => {
+  const sql = 'SELECT id,blocked,status,team_completed FROM project'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).json(result)
+  })
+  console.log('GET on Admin/Status_Projects')
+})
+
 // Obtenir les infos de la table users + projets des users
 Router.get('/users', (req, res) => {
   console.log(req.body)
