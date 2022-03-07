@@ -127,7 +127,7 @@ Router.put('/projet_annonces_update/:id', (req, res) => {
   )
 })
 
-//Supprimer l'annonce d'un user
+//Supprimer l'annonce d'un utilisateur
 Router.delete('/users_annonces_delete/:id', (req, res) => {
   const annonceId = req.params.id
   connection.query(
