@@ -12,15 +12,28 @@ const findUser = id => {
     )
     .then(([results]) => results[0])
 }
-
 const displayUsers = () => {
   return db
     .query(
-      'SELECT u.id, u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description_users,u.avatar, p.name, p.estimated_start_date, p.estimated_end_date, p.status, sd.art_name FROM users as u INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
+      'SELECT u.id, u.firstname, u.lastname, u.nickname, u.email, u.phone, u.city, u.country, u.birthday, u.description_users,u.avatar, u.blocked, p.name, p.estimated_start_date, p.estimated_end_date, p.status, sd.art_name FROM users as u INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id LEFT JOIN project_has_users AS phu ON u.id=phu.users_id LEFT JOIN project AS p ON p.id=phu.project_id'
     )
     .then(([results]) => results)
 }
 
+const displayValidatedUsers = () => {
+  return db
+    .query(
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=0 ORDER BY lastname, firstname DESC'
+    )
+    .then(([results]) => results)
+}
+const displayBlockedUsers = () => {
+  return db
+    .query(
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=1 ORDER BY lastname, firstname DESC'
+    )
+    .then(([results]) => results)
+}
 // Liste de tous les utilisateurs
 const allusers = () => {
   return db
@@ -117,6 +130,8 @@ module.exports = {
   allusers,
   findUser,
   displayUsers,
+  displayValidatedUsers,
+  displayBlockedUsers,
   findProject,
   findAnnoncesUsers,
   findAnnonceUser,

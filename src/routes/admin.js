@@ -49,6 +49,36 @@ Router.get('/users', (req, res) => {
     })
 })
 
+// Obtenir les users validés
+Router.get('/validated_users', (req, res) => {
+  console.log(req.body)
+  functions
+    .displayValidatedUsers(req.body)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('User not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving user from database')
+    })
+})
+
+// Obtenir les users non validés
+Router.get('/blocked_users', (req, res) => {
+  console.log(req.body)
+  functions
+    .displayBlockedUsers(req.body)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('User not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving user from database')
+    })
+})
+
 // Bloquer ou débloquer un projet
 Router.put('/projects/:id', (req, res) => {
   const projectId = req.params.id
@@ -69,11 +99,13 @@ Router.put('/projects/:id', (req, res) => {
 })
 
 // Bloquer ou débloquer un user
-Router.put('/block_users/:id', (req, res) => {
+Router.put('/block_user/:id', (req, res) => {
+  console.log(req.params.id)
   const userId = req.params.id
+  const blocked = req.body.blocked
   connection.query(
-    'UPDATE users SET blocked = !blocked WHERE id = ?',
-    [userId],
+    'UPDATE users SET blocked = ? WHERE id = ?',
+    [blocked, userId],
     (err, result) => {
       if (err) {
         console.log(err)
