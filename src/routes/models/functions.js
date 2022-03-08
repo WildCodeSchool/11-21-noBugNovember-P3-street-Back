@@ -106,11 +106,11 @@ const deleteUserOnly = id => {
 
 const createProject = (body) => {
   console.log(body)
-  const { name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked} = body;
+  const { name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id} = body;
   return db
   .query(
-    'INSERT INTO project (name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    [name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, bloked]
+    'INSERT INTO project (name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id]
   )
   .then(([result]) => result.affectedRows !== 0);
  }

@@ -28,7 +28,8 @@ Router.delete('/delete_account/:id', (req, res) => {
       })
   })
 
-  Router.post('/create_project', (req, res) => {
+  Router.post('users/createproject', (req, res) => {
+    console.log('found route')
     dbHelper
       .createProject(req.body)
       .then(created => {
