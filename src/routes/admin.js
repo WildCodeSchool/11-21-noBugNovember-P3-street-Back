@@ -14,11 +14,61 @@ Router.get('/read', (req, res) => {
 })
 */
 
+Router.get('/status_users', (req, res) => {
+  const sql = 'SELECT id,blocked,available FROM users'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).json(result)
+  })
+  console.log('GET on Admin/Status_Users')
+})
+
+Router.get('/status_projects', (req, res) => {
+  const sql = 'SELECT id,blocked,status,team_completed FROM project'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).json(result)
+  })
+  console.log('GET on Admin/Status_Projects')
+})
+
 // Obtenir les infos de la table users + projets des users
 Router.get('/users', (req, res) => {
   console.log(req.body)
   functions
     .displayUsers(req.body)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('User not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving user from database')
+    })
+})
+
+// Obtenir les users validés
+Router.get('/validated_users', (req, res) => {
+  console.log(req.body)
+  functions
+    .displayValidatedUsers(req.body)
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('User not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving user from database')
+    })
+})
+
+// Obtenir les users non validés
+Router.get('/blocked_users', (req, res) => {
+  console.log(req.body)
+  functions
+    .displayBlockedUsers(req.body)
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('User not found')
@@ -49,11 +99,13 @@ Router.put('/projects/:id', (req, res) => {
 })
 
 // Bloquer ou débloquer un user
-Router.put('/block_users/:id', (req, res) => {
+Router.put('/block_user/:id', (req, res) => {
+  console.log(req.params.id)
   const userId = req.params.id
+  const blocked = req.body.blocked
   connection.query(
-    'UPDATE users SET blocked = !blocked WHERE id = ?',
-    [userId],
+    'UPDATE users SET blocked = ? WHERE id = ?',
+    [blocked, userId],
     (err, result) => {
       if (err) {
         console.log(err)
