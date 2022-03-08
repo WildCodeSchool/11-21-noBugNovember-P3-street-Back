@@ -167,4 +167,15 @@ Router.put('/userhasprojects', (req, res) => {
   })
 })
 
+Router.get('/creatorproject/:id', (req, res) => {
+  sql =
+    'SELECT u.id, u.lastname, u.firstname FROM users AS u INNER JOIN project AS p ON u.id = p.users_id WHERE p.id =?'
+  const value = [req.params.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
 module.exports = Router
