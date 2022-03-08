@@ -79,6 +79,30 @@ Router.get('/blocked_users', (req, res) => {
     })
 })
 
+//Obtenir la liste des projets validés
+Router.get('/validated_projects', (req, res) => {
+  const sql =
+    "SELECT p.id, p.name, p.description, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date, p.status, u.firstname, u.lastname, u.phone, u.email, r.region_name FROM project AS p INNER JOIN region AS r ON p.region_id = r.id INNER JOIN users AS u ON u.id = p.users_id WHERE p.blocked=0 ORDER BY p.id DESC"
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+  console.log('GET on /admin/validated_projects')
+})
+
+//Obtenir la liste des projets bloqués
+Router.get('/blocked_projects', (req, res) => {
+  const sql =
+    "SELECT p.id, p.name, p.description, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date, p.status, u.firstname, u.lastname, u.phone, u.email, r.region_name FROM project AS p INNER JOIN region AS r ON p.region_id = r.id INNER JOIN users AS u ON u.id = p.users_id WHERE p.blocked=1 ORDER BY p.id DESC"
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+  console.log('GET on /admin/blocked_projects')
+})
+
 // Bloquer ou débloquer un projet
 Router.put('/projects/:id', (req, res) => {
   const projectId = req.params.id
@@ -159,7 +183,7 @@ Router.put('/projet_annonces_update/:id', (req, res) => {
   )
 })
 
-//Supprimer l'annonce d'un user
+//Supprimer l'annonce d'un utilisateur
 Router.delete('/users_annonces_delete/:id', (req, res) => {
   const annonceId = req.params.id
   connection.query(
@@ -233,5 +257,21 @@ Router.delete('/delete_user/:id', (req, res) => {
 //     }
 //   )
 // })
+
+Router.delete('/project_delete/:id', (req, res) => {
+  const value = req.params.id
+  const sql = 'DELETE FROM project WHERE id=?'
+
+  connection.query(sql, value, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an announcement')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Announcement with id ${annonceId} not found.`)
+    } else {
+      res.status(200).send('Annonce deleted')
+    }
+  })
+})
 
 module.exports = Router
