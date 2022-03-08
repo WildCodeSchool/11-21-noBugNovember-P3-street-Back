@@ -3,7 +3,7 @@ const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const Router = express.Router()
 
-//Obtenir la listse des projets
+//Obtenir la liste des projets
 Router.get('/projects', (req, res) => {
   functions
     .projects()
