@@ -3,7 +3,7 @@ const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const Router = express.Router()
 
-//Obtenir la listse des projets
+//Obtenir la listes des projets
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -21,7 +21,7 @@ Router.get('/projects', (req, res) => {
 Router.get('/project_details/:id', (req, res) => {
   const id = req.params.id
   sql =
-    'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.status, p.localisation, p.youtubelink,  d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id= ?'
+    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.localisation, p.youtubelink,  d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id= ?"
 
   connection.query(sql, id, (err, result) => {
     console.log(id)
@@ -33,7 +33,7 @@ Router.get('/project_details/:id', (req, res) => {
 Router.get('/project_users/:id', (req, res) => {
   console.log(req.body)
   sql =
-    'SELECT u.id, u.lastname, u.firstname, u.avatar  FROM users AS u INNER JOIN project AS p INNER JOIN project_has_users AS phu ON p.id=phu.project_id AND u.id=phu.users_id WHERE p.id=?'
+    'SELECT u.id, u.lastname, u.firstname, u.avatar, sd.art_name FROM users AS u INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu INNER JOIN project AS p INNER JOIN project_has_users AS phu ON p.id=phu.project_id AND u.id=phu.users_id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE p.id=?'
   const value = req.params.id
 
   connection.query(sql, value, (err, result) => {

@@ -64,6 +64,24 @@ Router.get('/validated_users', (req, res) => {
     })
 })
 
+//Recherche d'une personne par son nom ou prénom
+Router.put('/search_users', (req, res) => {
+  const value = ['%' + req.body.name + '%', '%' + req.body.name + '%']
+  const sql =
+    'SELECT u.id, u.firstname, u.lastname, sd.art_name FROM users AS u INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE lastname LIKE ? OR firstname LIKE ?'
+
+  connection.query(sql, value, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error blocking a project')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`User with id ${projectId} not found.`)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
 // Obtenir les users non validés
 Router.get('/blocked_users', (req, res) => {
   console.log(req.body)
