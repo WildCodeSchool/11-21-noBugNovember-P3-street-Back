@@ -88,7 +88,7 @@ Router.get('/validated_projects', (req, res) => {
     if (err) throw err
     return res.status(200).send(result)
   })
-  console.log('GET on /admin/bvalidated_projects')
+  console.log('GET on /admin/validated_projects')
 })
 
 //Obtenir la liste des projets bloqués
@@ -219,6 +219,22 @@ Router.delete('/projects_annonces_delete/:id', (req, res) => {
       }
     }
   )
+})
+
+Router.delete('/project_delete/:id', (req, res) => {
+  const value = req.params.id
+  const sql = 'DELETE FROM project WHERE id=?'
+
+  connection.query(sql, value, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an announcement')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Announcement with id ${annonceId} not found.`)
+    } else {
+      res.status(200).send('Annonce deleted')
+    }
+  })
 })
 
 module.exports = Router
