@@ -1,7 +1,7 @@
 const express = require('express')
 const connection = require('../helper/db.js')
-const Router = express.Router()
 const functions = require('./models/functions')
+const Router = express.Router()
 /*
 Router.get('/read', (req, res) => {
   const sql = 'SELECT * FROM articles'
@@ -256,6 +256,27 @@ Router.delete('/project_delete/:id', (req, res) => {
   })
 })
 
+//Retrait d'un utilisateur d'un projet
+Router.delete('/user_bye_project', (req, res) => {
+  const sql = 'DELETE FROM project_has_users WHERE users_id=? AND project_id=?'
+  const values = [req.body.users_id, req.body.project_id]
+
+  console.log(req.body)
+  console.log(values)
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Announcement with id ${values} not found.`)
+    } else {
+      res.status(200).send('User deleted from project')
+    }
+  })
+})
+
+//Ajout d'un utilisateur dans un projet
 Router.post('/addUserInProject', (req, res) => {
   const { project_id, users_id } = req.body
   let validationErrors = null
