@@ -239,6 +239,7 @@ Router.delete('/projects_annonces_delete/:id', (req, res) => {
   )
 })
 
+//Supprimer un projet
 Router.delete('/project_delete/:id', (req, res) => {
   const value = req.params.id
   const sql = 'DELETE FROM project WHERE id=?'
@@ -253,6 +254,33 @@ Router.delete('/project_delete/:id', (req, res) => {
       res.status(200).send('Annonce deleted')
     }
   })
+})
+
+Router.post('/addUserInProject', (req, res) => {
+  const { project_id, users_id } = req.body
+  let validationErrors = null
+
+  functions
+    .findUserInProject(project_id, users_id)
+    .then(existingUser => {
+      if (existingUser) return Promise.reject('DUPLICATE_USER')
+      validationErrors = functions.validateUsersInProject(req.body)
+      if (validationErrors) return Promise.reject('INVALID_DATA')
+      return functions.addUserInProject(req.body)
+    })
+    .then(addUser => {
+      res.status(201).json(addUser)
+    })
+    .catch(err => {
+      console.error(err)
+      if (err === 'DUPLICATE_USER')
+        res
+          .status(409)
+          .json({ message: 'Cet utilisateur est déjà rattaché à ce projet' })
+      else if (err === 'INVALID_DATA')
+        res.status(422).json({ validationErrors })
+      else res.status(500).json({ message: 'Erreur lors de la sauvegarde' })
+    })
 })
 
 module.exports = Router
