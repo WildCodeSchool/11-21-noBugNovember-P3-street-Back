@@ -23,14 +23,14 @@ const displayUsers = () => {
 const displayValidatedUsers = () => {
   return db
     .query(
-      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=0 ORDER BY lastname, firstname DESC'
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, u.available, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=0 ORDER BY lastname, firstname DESC'
     )
     .then(([results]) => results)
 }
 const displayBlockedUsers = () => {
   return db
     .query(
-      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=1 ORDER BY lastname, firstname DESC'
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.phone, u.city,  u.description_users, u.blocked, u.available, sd.art_name FROM users AS u INNER JOIN sub_domain_has_users AS sdhu INNER JOIN sub_domain AS sd ON sd.id=sdhu.sub_domain_id AND u.id=sdhu.users_id WHERE blocked=1 ORDER BY lastname, firstname DESC'
     )
     .then(([results]) => results)
 }

@@ -3,7 +3,7 @@ const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const Router = express.Router()
 
-//Obtenir la listse des projets
+//Obtenir la liste des projets
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -96,7 +96,7 @@ Router.get('/annonces_all_users', (req, res) => {
     })
 })
 
-//Afficher les annonce des utilisateur
+//Afficher les annonces des utilisateurs
 Router.get('/annonce_users', (req, res) => {
   functions
     .findAnnonceUser(req.body.id)
@@ -109,7 +109,8 @@ Router.get('/annonce_users', (req, res) => {
       res.status(500).send('Error retrieving annonce from database')
     })
 })
-//Afficher les annonce des utilisateur
+
+//Afficher les annonces des projets
 Router.get('/annonces_all_projects', (req, res) => {
   functions
     .findAnnoncesProjects()
