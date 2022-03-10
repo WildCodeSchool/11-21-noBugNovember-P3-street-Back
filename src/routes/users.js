@@ -4,7 +4,7 @@ const Router = express.Router()
 const functions = require('./models/functions')
 
 //Créer un profil utilisateur
-Router.post('/', (req, res) => {
+Router.post('/submitUser', (req, res) => {
     const { admin, blocked, firstname, lastname, password, email, birthday, phone, forget_password, available, phoneVisibility, emailVisibility, description_users } = req.body;
     console.log(req.body)
     connection.query(
