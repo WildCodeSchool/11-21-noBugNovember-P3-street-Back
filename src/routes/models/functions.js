@@ -75,7 +75,7 @@ const projectshasusers = () => {
 const findAnnoncesUsers = () => {
   return db
     .query(
-      'SELECT d.domain, sd.art_name, ad.description_annonce, ad.date, u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify FROM annonces_dispo AS ad INNER JOIN users AS u INNER JOIN domain AS D INNER JOIN sub_domain AS sd INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain_has_users AS sdhu ON u.id = ad.users_id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id AND u.id=uhd.users_id AND uhd.domain_id=d.id'
+      'SELECT ad .id, d.domain, sd.art_name, ad.description_annonce, ad.date,  u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify FROM annonces_dispo AS ad INNER JOIN users AS u INNER JOIN domain AS D INNER JOIN sub_domain AS sd INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain_has_users AS sdhu ON u.id = ad.users_id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id AND u.id=uhd.users_id AND uhd.domain_id=d.id'
     )
     .then(([results]) => results)
 }
@@ -93,7 +93,7 @@ const findAnnonceUser = id => {
 const findAnnoncesProjects = () => {
   return db
     .query(
-      'SELECT p.id, sm.role, sm.description, sm.date, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation, d.domain FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id, sm.role DESC;'
+      'SELECT sm.id, sm.role, sm.description, sm.date, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation, d.domain FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id, sm.role DESC;'
     )
     .then(([results]) => results)
 }
