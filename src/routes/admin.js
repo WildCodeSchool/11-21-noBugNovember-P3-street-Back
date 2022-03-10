@@ -220,6 +220,7 @@ Router.delete('/projects_annonces_delete/:id', (req, res) => {
     }
   )
 })
+
 //Supprimer un utilisateur (!si l'utilisateur est créateur d'un projet, celui-ci est aussi supprimé!)
 Router.delete('/delete_user/:id', (req, res) => {
   const userId = req.params.id
@@ -231,7 +232,7 @@ Router.delete('/delete_user/:id', (req, res) => {
         console.log(err)
         res.status(500).send('Error updating an announcement')
       } else if (result.affectedRows === 0) {
-        res.status(404).send(`Announcement with id ${annonceId} not found.`)
+        res.status(404).send(`User not found.`)
       } else {
         res.status(200).send('Annonce deleted')
       }
