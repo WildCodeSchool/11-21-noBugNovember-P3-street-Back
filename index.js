@@ -19,8 +19,7 @@ app.use(express.json())
 
 app.use('/admin', admin)
 app.use('/all', all)
-app.use('/users', users);
-
+app.use('/users', users)
 
 let server = app.listen(3030, () => {
   console.log('listening on port', server.address().port)

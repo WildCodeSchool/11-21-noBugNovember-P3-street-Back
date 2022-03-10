@@ -3,7 +3,7 @@ const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const Router = express.Router()
 
-//Obtenir la listse des projets
+//Obtenir la liste des projets
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -96,7 +96,7 @@ Router.get('/annonces_all_users', (req, res) => {
     })
 })
 
-//Afficher les annonce des utilisateur
+//Afficher les annonces des utilisateurs
 Router.get('/annonce_users', (req, res) => {
   functions
     .findAnnonceUser(req.body.id)
@@ -109,7 +109,8 @@ Router.get('/annonce_users', (req, res) => {
       res.status(500).send('Error retrieving annonce from database')
     })
 })
-//Afficher les annonce des utilisateur
+
+//Afficher les annonces des projets
 Router.get('/annonces_all_projects', (req, res) => {
   functions
     .findAnnoncesProjects()
@@ -160,6 +161,17 @@ Router.put('/userhasprojects', (req, res) => {
   sql =
     'SELECT p.id, p.name, p.logo, p.status, d.domain FROM project AS p INNER JOIN domain AS d INNER JOIN users AS u INNER JOIN project_has_users AS phu ON u.id=phu.users_id AND phu.project_id=p.id AND p.domain_id=d.id WHERE u.id=?'
   const value = [req.body.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
+Router.get('/creatorproject/:id', (req, res) => {
+  sql =
+    'SELECT u.id, u.lastname, u.firstname FROM users AS u INNER JOIN project AS p ON u.id = p.users_id WHERE p.id =?'
+  const value = [req.params.id]
 
   connection.query(sql, value, (err, result) => {
     if (err) throw err
