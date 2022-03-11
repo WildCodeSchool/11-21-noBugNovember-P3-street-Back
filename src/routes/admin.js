@@ -230,11 +230,11 @@ Router.delete('/delete_user/:id', (req, res) => {
     (err, result) => {
       if (err) {
         console.log(err)
-        res.status(500).send('Error updating an announcement')
+        res.status(500).send('Error updating an user')
       } else if (result.affectedRows === 0) {
         res.status(404).send(`User not found.`)
       } else {
-        res.status(200).send('Annonce deleted')
+        res.status(200).send('User deleted')
       }
     }
   )

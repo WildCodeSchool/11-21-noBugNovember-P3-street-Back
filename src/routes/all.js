@@ -6,7 +6,6 @@ const path = require('path');
 const cors = require('cors')
 const Router = express.Router()
 
-<<<<<<< HEAD
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log('destination?')
@@ -20,10 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-//Obtenir la listse des projets
-=======
 //Obtenir la liste des projets
->>>>>>> dev
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -49,6 +45,7 @@ Router.get('/project_details/:id', (req, res) => {
     return res.status(200).send(result)
   })
 })
+
 //Obtenir la liste des users d'un projet
 Router.get('/project_users/:id', (req, res) => {
   console.log(req.body)
