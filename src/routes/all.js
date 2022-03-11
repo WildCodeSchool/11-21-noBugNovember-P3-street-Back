@@ -1,9 +1,29 @@
 const express = require('express')
 const connection = require('../helper/db.js')
 const functions = require('./models/functions')
+const multer = require('multer')
+const path = require('path');
+const cors = require('cors')
 const Router = express.Router()
 
+<<<<<<< HEAD
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    console.log('destination?')
+    cb(null, 'images/')
+  },
+  filename: (req, file, cb) => {
+    console.log('filename?')
+    cb(null, file.originalname)
+  },
+})
+
+const upload = multer({ storage: storage })
+
+//Obtenir la listse des projets
+=======
 //Obtenir la liste des projets
+>>>>>>> dev
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -168,15 +188,22 @@ Router.put('/userhasprojects', (req, res) => {
   })
 })
 
-Router.get('/creatorproject/:id', (req, res) => {
-  sql =
-    'SELECT u.id, u.lastname, u.firstname FROM users AS u INNER JOIN project AS p ON u.id = p.users_id WHERE p.id =?'
-  const value = [req.params.id]
+//Obtenir la liste de toutes les régions
+Router.get('/regions', (req, res) => {
+  sql = 'SELECT * FROM region'
 
-  connection.query(sql, value, (err, result) => {
+  connection.query(sql, (err, result) => {
     if (err) throw err
     return res.status(200).send(result)
   })
 })
+
+Router.use(cors())
+
+Router.post('/image', upload.single('file'), function(req, res) {
+  res.json({})
+})
+
+
 
 module.exports = Router
