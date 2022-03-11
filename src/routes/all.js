@@ -6,7 +6,6 @@ const path = require('path')
 const cors = require('cors')
 const Router = express.Router()
 
-//Obtenir la listes des projets
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log('destination?')
