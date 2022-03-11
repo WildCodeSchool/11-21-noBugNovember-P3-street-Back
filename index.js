@@ -10,7 +10,7 @@ const all = require('./src/routes/all.js')
 const users = require('./src/routes/users.js')
 const dbHelper = require('./src/routes/models/functions')
 
-const app = express()  
+const app = express()
 
 app.use(cors())
 app.use('/public', express.static('public'))
@@ -40,4 +40,3 @@ app.post('/createproject', (req, res) => {
 let server = app.listen(3030, () => {
   console.log('listening on port', server.address().port)
 })
-
