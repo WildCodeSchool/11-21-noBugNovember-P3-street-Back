@@ -109,7 +109,8 @@ Router.get('/annonce_users', (req, res) => {
       res.status(500).send('Error retrieving annonce from database')
     })
 })
-//Afficher les annonce des utilisateur
+
+//Afficher les annonces des utilisateur
 Router.get('/annonces_all_projects', (req, res) => {
   functions
     .findAnnoncesProjects()

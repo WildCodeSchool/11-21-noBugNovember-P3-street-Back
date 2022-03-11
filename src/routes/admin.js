@@ -142,7 +142,6 @@ Router.put('/projects/:id', (req, res) => {
 
 // Bloquer ou débloquer un user
 Router.put('/block_user/:id', (req, res) => {
-  console.log(req.params.id)
   const userId = req.params.id
   const blocked = req.body.blocked
   connection.query(
@@ -260,9 +259,6 @@ Router.delete('/project_delete/:id', (req, res) => {
 Router.delete('/user_bye_project', (req, res) => {
   const sql = 'DELETE FROM project_has_users WHERE users_id=? AND project_id=?'
   const values = [req.body.users_id, req.body.project_id]
-
-  console.log(req.body)
-  console.log(values)
 
   connection.query(sql, values, (err, result) => {
     if (err) {
