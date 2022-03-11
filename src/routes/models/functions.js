@@ -57,7 +57,7 @@ const findProject = id => {
 const projects = id => {
   return db
     .query(
-      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id ORDER BY p.id DESC'
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.blocked=0 ORDER BY p.id DESC'
     )
     .then(([results]) => results)
 }
@@ -185,16 +185,47 @@ const validate = (data, forCreation = true) => {
   }).validate(data, { abortEarly: false }).error
 }
 
+const findUserInProject = (project_id, users_id) => {
+  return db
+    .query(
+      'SELECT * FROM project_has_users WHERE project_id = ? AND users_id = ?',
+      [project_id, users_id]
+    )
+    .then(([results]) => results[0])
+}
+
+const validateUsersInProject = (data, forCreation = true) => {
+  const presence = forCreation ? 'required' : 'optional'
+  return Joi.object({
+    project_id: Joi.number().presence(presence),
+    users_id: Joi.number().presence(presence)
+  }).validate(data, { abortEarly: false }).error
+}
+
+const addUserInProject = ({ project_id, users_id }) => {
+  return db
+    .query(
+      'INSERT INTO project_has_users (project_id, users_id) VALUES (?, ?)',
+      [project_id, users_id]
+    )
+    .then(([result]) => {
+      const id = result.insertId
+      return { project_id, users_id }
+    })
+}
+
 module.exports = {
+  addUserInProject,
   allusers,
-  findUser,
+  displayBlockedUsers,
   displayUsers,
   displayValidatedUsers,
-  displayBlockedUsers,
-  findProject,
   findAnnoncesUsers,
   findAnnonceUser,
   findAnnoncesProjects,
+  findProject,
+  findUser,
+  findUserInProject,
   projects,
   validate,
   deleteUserProject,
@@ -202,5 +233,6 @@ module.exports = {
   createProject,
   validateProject,
   projectshasusers,
-  validate
+  validate,
+  validateUsersInProject
 }
