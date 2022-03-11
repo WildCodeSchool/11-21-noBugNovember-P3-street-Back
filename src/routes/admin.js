@@ -1,7 +1,7 @@
 const express = require('express')
 const connection = require('../helper/db.js')
-const Router = express.Router()
 const functions = require('./models/functions')
+const Router = express.Router()
 /*
 Router.get('/read', (req, res) => {
   const sql = 'SELECT * FROM articles'
@@ -64,6 +64,24 @@ Router.get('/validated_users', (req, res) => {
     })
 })
 
+//Recherche d'une personne par son nom ou prénom
+Router.put('/search_users', (req, res) => {
+  const value = ['%' + req.body.name + '%', '%' + req.body.name + '%']
+  const sql =
+    'SELECT u.id, u.firstname, u.lastname, sd.art_name FROM users AS u INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE lastname LIKE ? OR firstname LIKE ?'
+
+  connection.query(sql, value, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error blocking a project')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`User with id ${projectId} not found.`)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
 // Obtenir les users non validés
 Router.get('/blocked_users', (req, res) => {
   console.log(req.body)
@@ -124,7 +142,6 @@ Router.put('/projects/:id', (req, res) => {
 
 // Bloquer ou débloquer un user
 Router.put('/block_user/:id', (req, res) => {
-  console.log(req.params.id)
   const userId = req.params.id
   const blocked = req.body.blocked
   connection.query(
@@ -240,6 +257,7 @@ Router.delete('/delete_user/:id', (req, res) => {
   )
 })
 
+//Supprimer un projet
 Router.delete('/project_delete/:id', (req, res) => {
   const value = req.params.id
   const sql = 'DELETE FROM project WHERE id=?'
@@ -254,6 +272,51 @@ Router.delete('/project_delete/:id', (req, res) => {
       res.status(200).send('Annonce deleted')
     }
   })
+})
+
+//Retrait d'un utilisateur d'un projet
+Router.delete('/user_bye_project', (req, res) => {
+  const sql = 'DELETE FROM project_has_users WHERE users_id=? AND project_id=?'
+  const values = [req.body.users_id, req.body.project_id]
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Announcement with id ${values} not found.`)
+    } else {
+      res.status(200).send('User deleted from project')
+    }
+  })
+})
+
+//Ajout d'un utilisateur dans un projet
+Router.post('/addUserInProject', (req, res) => {
+  const { project_id, users_id } = req.body
+  let validationErrors = null
+
+  functions
+    .findUserInProject(project_id, users_id)
+    .then(existingUser => {
+      if (existingUser) return Promise.reject('DUPLICATE_USER')
+      validationErrors = functions.validateUsersInProject(req.body)
+      if (validationErrors) return Promise.reject('INVALID_DATA')
+      return functions.addUserInProject(req.body)
+    })
+    .then(addUser => {
+      res.status(201).json(addUser)
+    })
+    .catch(err => {
+      console.error(err)
+      if (err === 'DUPLICATE_USER')
+        res
+          .status(409)
+          .json({ message: 'Cet utilisateur est déjà rattaché à ce projet' })
+      else if (err === 'INVALID_DATA')
+        res.status(422).json({ validationErrors })
+      else res.status(500).json({ message: 'Erreur lors de la sauvegarde' })
+    })
 })
 
 module.exports = Router
