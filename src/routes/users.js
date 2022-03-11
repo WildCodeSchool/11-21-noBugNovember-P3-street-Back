@@ -1,6 +1,7 @@
 const express = require('express')
 const connection = require('../helper/db.js')
 const dbHelper = require('./models/functions')
+const functions = require('./models/functions')
 const Router = express.Router()
 const functions = require('./models/functions')
 
