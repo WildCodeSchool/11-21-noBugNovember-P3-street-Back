@@ -241,20 +241,17 @@ Router.delete('/projects_annonces_delete/:id', (req, res) => {
 //Supprimer un utilisateur (!si l'utilisateur est créateur d'un projet, celui-ci est aussi supprimé!)
 Router.delete('/delete_user/:id', (req, res) => {
   const userId = req.params.id
-  connection.query(
-    'DELETE u FROM users AS u INNER JOIN project_has_users AS phu INNER JOIN domain_has_sub_domain AS dhsd INNER JOIN sub_domain_has_users AS sdhu ON u.id=dhsd.sub_domain_id AND u.id=sdhu.users_id WHERE u.id=?',
-    [userId],
-    (err, result) => {
-      if (err) {
-        console.log(err)
-        res.status(500).send('Error updating an announcement')
-      } else if (result.affectedRows === 0) {
-        res.status(404).send(`User not found.`)
-      } else {
-        res.status(200).send('Annonce deleted')
-      }
+  console.log(userId)
+  connection.query('DELETE FROM users WHERE id=?', [userId], (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an announcement')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`User not found.`)
+    } else {
+      res.status(200).send('Annonce deleted')
     }
-  )
+  })
 })
 
 //Supprimer un projet
