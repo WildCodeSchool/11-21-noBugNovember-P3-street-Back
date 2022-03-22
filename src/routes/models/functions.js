@@ -7,7 +7,7 @@ const db = connection.promise()
 const findUser = id => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.available, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
+      'SELECT u.firstname, u.lastname, u.available, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, u.tiktok, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
       [id]
     )
     .then(([results]) => results[0])
@@ -38,7 +38,7 @@ const displayBlockedUsers = () => {
 const allusers = () => {
   return db
     .query(
-      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.tiktok, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
     )
     .then(([results]) => results)
 }
@@ -91,44 +91,62 @@ const findAnnonceUser = id => {
 }
 
 const deleteUserProject = id => {
-  return db 
-  .query(
-    'DELETE FROM project_has_users WHERE users_id=?;',
-    [id]
-  )
-  .then(([result]) => result.affectedRows !== 0);
+  return db
+    .query('DELETE FROM project_has_users WHERE users_id=?;', [id])
+    .then(([result]) => result.affectedRows !== 0)
 }
 
 const deleteUserAnnonceDispo = id => {
-  return db 
-  .query(
-    'DELETE FROM annonces_dispo WHERE users_id=?;',
-    [id]
-  )
-  .then(([result]) => result.affectedRows !== 0);
+  return db
+    .query('DELETE FROM annonces_dispo WHERE users_id=?;', [id])
+    .then(([result]) => result.affectedRows !== 0)
 }
 
-
 const deleteUserOnly = id => {
-  return db
-  .query(
+  return db.query(
     'DELETE u FROM users AS u INNER JOIN project_has_users AS phu INNER JOIN project AS p INNER JOIN sub_domain_has_users AS sdhu INNER JOIN annonces_dispo AS ad ON u.id=p.users_id AND u.id=dhsd.users_id AND u.id=sdhu.users_id AND u.id=ad.users_id WHERE u.id=?',
     [id]
   )
 }
 
-const createProject = (body) => {
+const createProject = body => {
   console.log(body)
-  const { name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id} = body;
+  const {
+    name,
+    logo,
+    estimated_start_date,
+    estimated_end_date,
+    description,
+    localisation,
+    team_completed,
+    status,
+    domain_id,
+    users_id,
+    blocked,
+    region_id
+  } = body
   return db
-  .query(
-    'INSERT INTO project (name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    [name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id]
-  )
-  .then(([result]) => result.affectedRows !== 0);
- }
+    .query(
+      'INSERT INTO project (name, logo, estimated_start_date, estimated_end_date, description, localisation, team_completed, status, domain_id, users_id, blocked, region_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        name,
+        logo,
+        estimated_start_date,
+        estimated_end_date,
+        description,
+        localisation,
+        team_completed,
+        status,
+        domain_id,
+        users_id,
+        blocked,
+        region_id
+      ]
+    )
+    .then(([result]) => result.affectedRows !== 0)
+}
 
- const validateProject = (params, forProject = true) => {
+const validateProject = (params, forProject = true) => {
   const presence1 = forProject ? 'required' : 'optional'
   return Joi.object({
     name: Joi.string().presence(presence1).required(),
@@ -140,14 +158,9 @@ const createProject = (body) => {
     status: Joi.number.presence(presence1).required(),
     domain_id: Joi.number.presence(presence1).required(),
     users_id: Joi.number.presence(presence1).required(),
-    bloked: Joi.number.presence(presence1).required(),
-   
-
-   
-   
+    bloked: Joi.number.presence(presence1).required()
   }).validate(params, { abortEarly: false }).error
 }
-
 
 const findAnnoncesProjects = () => {
   return db
@@ -181,7 +194,7 @@ const validate = (data, forCreation = true) => {
     forget_password: Joi.string().max(255).required(),
     available: Joi.boolean().required(),
     phoneVisibilty: Joi.boolean().required(),
-    emailVisibilty: Joi.boolean().required(),
+    emailVisibilty: Joi.boolean().required()
   }).validate(data, { abortEarly: false }).error
 }
 
