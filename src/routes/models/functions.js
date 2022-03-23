@@ -7,7 +7,7 @@ const db = connection.promise()
 const findUser = id => {
   return db
     .query(
-      'SELECT u.firstname, u.lastname, u.available, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
+      'SELECT u.firstname, u.lastname, u.available, u.description_users, u.avatar, u.email, u.emailVisibility, u.phone, u.phoneVisibility, u.country, u.city, u.birthday, u.twitter, u.instagram, u.youtube, u.spotify, u.tiktok, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.id=? AND u.blocked=0',
       [id]
     )
     .then(([results]) => results[0])
@@ -38,7 +38,7 @@ const displayBlockedUsers = () => {
 const allusers = () => {
   return db
     .query(
-      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
+      'SELECT u.id, u.firstname, u.lastname, u.avatar, u.email, u.emailVisibility, u.available, u.phone, u.phoneVisibility, u.country, u.city, u.twitter, u.instagram, u.youtube, u.spotify, u.tiktok, u.description_users, sd.art_name, d.domain FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain AS uhd INNER JOIN sub_domain AS sd INNER JOIN sub_domain_has_users AS sdhu ON u.id=uhd.users_id AND uhd.domain_id = d.id AND u.id=sdhu.users_id AND sdhu.sub_domain_id=sd.id WHERE u.blocked=0'
     )
     .then(([results]) => results)
 }
@@ -170,7 +170,11 @@ const validateProject = (params, forProject = true) => {
   }).validate(params, { abortEarly: false }).error
 }
 
+<<<<<<< HEAD
 const findValidatedAnnoncesProjects = () => {
+=======
+const findAnnoncesProjects = () => {
+>>>>>>> dev
   return db
     .query(
       'SELECT sm.id, sm.role, sm.description, sm.date, sm.blocked, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation, d.domain FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE sm.blocked = 0 ORDER BY p.id, sm.role DESC;'

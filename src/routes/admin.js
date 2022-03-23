@@ -251,6 +251,23 @@ Router.put('/projet_annonces_update/:id', (req, res) => {
   )
 })
 
+Router.put('/update_status/:id', (req, res) => {
+  const status = req.body.status
+  const projetId = req.params.id
+  const sql = 'UPDATE project SET status=? WHERE id=?'
+
+  connection.query(sql, [status, projetId], (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an announcement')
+    } else if (result.affectedRows === 0) {
+      res.status(404).send(`Announcement with id ${projetId} not found.`)
+    } else {
+      res.sendStatus(200)
+    }
+  })
+})
+
 //Supprimer l'annonce d'un utilisateur
 Router.delete('/users_annonces_delete/:id', (req, res) => {
   const annonceId = req.params.id
