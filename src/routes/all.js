@@ -100,10 +100,10 @@ Router.get('/allusers', (req, res) => {
     })
 })
 
-//Avoir toutes les annonces de tous les utilisateurs
+//Avoir toutes les annonces validées de tous les utilisateurs
 Router.get('/annonces_all_users', (req, res) => {
   functions
-    .findAnnoncesUsers()
+    .findValidatedAnnoncesUsers()
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('Annonces not found')
@@ -114,7 +114,21 @@ Router.get('/annonces_all_users', (req, res) => {
     })
 })
 
-//Afficher les annonces des utilisateurs
+//Avoir toutes les annonces non validées de tous les utilisateurs
+Router.get('/annonces_users_blocked', (req, res) => {
+  functions
+    .findNonValidatedAnnoncesUsers()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonces not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonces from database')
+    })
+})
+
+//Afficher les annonces d'un utilisateur
 Router.get('/annonce_users', (req, res) => {
   functions
     .findAnnonceUser(req.body.id)
@@ -128,10 +142,24 @@ Router.get('/annonce_users', (req, res) => {
     })
 })
 
-//Afficher les annonces des projets
+//Afficher les annonces  validés des projets
 Router.get('/annonces_all_projects', (req, res) => {
   functions
-    .findAnnoncesProjects()
+    .findValidatedAnnoncesProjects()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonces not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonce from database')
+    })
+})
+
+//Afficher les annonces  validés des projets
+Router.get('/annonces_projects_blocked', (req, res) => {
+  functions
+    .findNonValidatedAnnoncesProjects()
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('Annonces not found')

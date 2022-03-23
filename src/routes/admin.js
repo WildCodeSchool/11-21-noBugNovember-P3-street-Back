@@ -121,6 +121,19 @@ Router.get('/blocked_projects', (req, res) => {
   console.log('GET on /admin/blocked_projects')
 })
 
+//Obtenir les détails d'un projet et ses participants
+Router.get('/project_details_edit/:id', (req, res) => {
+  const id = req.params.id
+  sql =
+    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.localisation, p.youtubelink,  d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id= ?"
+
+  connection.query(sql, id, (err, result) => {
+    console.log(id)
+    if (err) throw err
+    return res.status(200).send(result[0])
+  })
+})
+
 // Bloquer ou débloquer un projet
 Router.put('/projects/:id', (req, res) => {
   const projectId = req.params.id
@@ -153,6 +166,44 @@ Router.put('/block_user/:id', (req, res) => {
         res.status(500).send('Error blocking a user')
       } else if (result.affectedRows === 0) {
         res.status(404).send(`User with id ${userId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
+})
+
+// Bloquer ou débloquer une annonce projet
+Router.put('/annonce_project/:id', (req, res) => {
+  const annonceId = req.params.id
+  connection.query(
+    'UPDATE search_mate SET blocked = !blocked WHERE id = ?',
+    [annonceId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error blocking a project')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`User with id ${annonceId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
+})
+
+// Bloquer ou débloquer une annonce user
+Router.put('/annonce_user/:id', (req, res) => {
+  const annonceId = req.params.id
+  connection.query(
+    'UPDATE annonces_dispo SET blocked = !blocked WHERE id = ?',
+    [annonceId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error blocking a project')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`User with id ${annonceId} not found.`)
       } else {
         res.sendStatus(200)
       }
