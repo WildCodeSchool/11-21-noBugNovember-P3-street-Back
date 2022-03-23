@@ -170,11 +170,7 @@ const validateProject = (params, forProject = true) => {
   }).validate(params, { abortEarly: false }).error
 }
 
-<<<<<<< HEAD
 const findValidatedAnnoncesProjects = () => {
-=======
-const findAnnoncesProjects = () => {
->>>>>>> dev
   return db
     .query(
       'SELECT sm.id, sm.role, sm.description, sm.date, sm.blocked, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.localisation, d.domain FROM search_mate AS sm LEFT JOIN project AS p ON p.id=sm.project_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE sm.blocked = 0 ORDER BY p.id, sm.role DESC;'
