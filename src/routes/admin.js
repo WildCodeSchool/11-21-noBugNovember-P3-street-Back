@@ -121,6 +121,19 @@ Router.get('/blocked_projects', (req, res) => {
   console.log('GET on /admin/blocked_projects')
 })
 
+//Obtenir les détails d'un projet et ses participants
+Router.get('/project_details_edit/:id', (req, res) => {
+  const id = req.params.id
+  sql =
+    "SELECT p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%Y-%m-%d') AS date_start, DATE_FORMAT(p.estimated_end_date,'%Y-%m-%d') AS date_end, p.description, p.status, p.localisation, p.youtubelink,r.id,r.region_name, d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id INNER JOIN region AS r ON p.region_id=r.id WHERE p.id= ?"
+
+  connection.query(sql, id, (err, result) => {
+    console.log(id)
+    if (err) throw err
+    return res.status(200).send(result[0])
+  })
+})
+
 // Bloquer ou débloquer un projet
 Router.put('/projects/:id', (req, res) => {
   const projectId = req.params.id
@@ -160,6 +173,44 @@ Router.put('/block_user/:id', (req, res) => {
   )
 })
 
+// Bloquer ou débloquer une annonce projet
+Router.put('/annonce_project/:id', (req, res) => {
+  const annonceId = req.params.id
+  connection.query(
+    'UPDATE search_mate SET blocked = !blocked WHERE id = ?',
+    [annonceId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error blocking a project')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`User with id ${annonceId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
+})
+
+// Bloquer ou débloquer une annonce user
+Router.put('/annonce_user/:id', (req, res) => {
+  const annonceId = req.params.id
+  connection.query(
+    'UPDATE annonces_dispo SET blocked = !blocked WHERE id = ?',
+    [annonceId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error blocking a project')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`User with id ${annonceId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
+})
+
 //Modifier une annonce user
 Router.put('/users_annonces_update/:id', (req, res) => {
   const annoncePropsToUpdate = req.body
@@ -183,7 +234,7 @@ Router.put('/users_annonces_update/:id', (req, res) => {
 //Modifier une annonce projet
 Router.put('/projet_annonces_update/:id', (req, res) => {
   const projetPropsToUpdate = req.body
-  const projetId = req.params.id
+  const projectId = req.params.id
   connection.query(
     'UPDATE annonces_dispo SET ? WHERE id=?',
     [projetPropsToUpdate, projetId],
@@ -213,6 +264,22 @@ Router.put('/update_status/:id', (req, res) => {
       res.status(404).send(`Announcement with id ${projetId} not found.`)
     } else {
       res.sendStatus(200)
+    }
+  })
+})
+
+Router.put('/edit_project/:id', (req, res) => {
+  const id = req.params.id
+  const newAttribut = req.body
+  const values = [newAttribut, id]
+  const sql = 'UPDATE project SET ?  WHERE id = ?'
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an album')
+    } else {
+      res.status(204).json(result)
     }
   })
 })
@@ -271,8 +338,8 @@ Router.delete('/delete_user/:id', (req, res) => {
         res.status(200).send('User deleted')
       }
     }
-  )
-})
+  )}
+)
 
 //Supprimer un projet
 Router.delete('/project_delete/:id', (req, res) => {

@@ -42,7 +42,7 @@ Router.delete('/delete_account/:id', (req, res) => {
     })
 })
 
-Router.post('users/createproject', (req, res) => {
+Router.post('/createproject', (req, res) => {
   console.log('found route')
   dbHelper
     .createProject(req.body)
@@ -231,6 +231,36 @@ Router.put('/submitUser', (req, res) => {
           })
         }
       })
+    }
+  })
+})
+
+//Créer une annonce utilisateur
+Router.post('/submitAnnonceUser', (req, res) => {
+  const sql =
+    'INSERT INTO annonces_dispo (description_annonce,date,users_id,blocked) VALUES (?,?,?,?)'
+  const { description_annonce, date, users_id, blocked } = req.body
+  let values = [description_annonce, date, users_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
+//Créer une annonce projet
+Router.post('/submitAnnonceProject', (req, res) => {
+  const sql =
+    'INSERT INTO search_mate (role, description,date,project_id,blocked) VALUES (?,?,?,?,?)'
+  const { role, description, date, project_id, blocked } = req.body
+  let values = [role, description, date, project_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
     }
   })
 })
