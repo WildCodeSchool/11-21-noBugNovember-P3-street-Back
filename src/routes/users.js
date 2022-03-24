@@ -139,4 +139,32 @@ Router.post('/submitUser', (req, res) => {
   })
 })
 
+Router.post('/submitAnnonceUser', (req, res) => {
+  const sql =
+    'INSERT INTO annonces_dispo (description_annonce,date,users_id,blocked) VALUES (?,?,?,?)'
+  const { description_annonce, date, users_id, blocked } = req.body
+  let values = [description_annonce, date, users_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
+Router.post('/submitAnnonceProject', (req, res) => {
+  const sql =
+    'INSERT INTO search_mate (role, description,date,project_id,blocked) VALUES (?,?,?,?,?)'
+  const { role, description, date, project_id, blocked } = req.body
+  let values = [role, description, date, project_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
 module.exports = Router
