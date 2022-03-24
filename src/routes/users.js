@@ -4,6 +4,21 @@ const dbHelper = require('./models/functions')
 const functions = require('./models/functions')
 const Router = express.Router()
 
+Router.put('/connect', (req, res) => {
+  const sql =
+    'SELECT id, firstname, admin FROM users WHERE email=? AND password=?'
+  const values = [req.body.email, req.body.password]
+
+  connection.query(sql, values, (err, result) => {
+    if (err) throw err
+    if (result.length === 0) {
+      res.status(404).send('error')
+    } else {
+      res.json(result)
+    }
+  })
+})
+
 Router.delete('/delete_account/:id', (req, res) => {
   console.log('req.params.id')
   dbHelper
