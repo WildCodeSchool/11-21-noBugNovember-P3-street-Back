@@ -55,6 +55,17 @@ Router.post('users/createproject', (req, res) => {
       res.status(500).send('Error retrieving project from database')
     })
 })
+
+//Récupérer profil utilisateur
+Router.get('/profil/:id', (req, res) => {
+  sql = 'SELECT * FROM users WHERE id=?'
+
+  connection.query(sql, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
 //Créer un profil utilisateur
 Router.post('/submitUser', (req, res) => {
   const sql =
@@ -139,10 +150,10 @@ Router.post('/submitUser', (req, res) => {
     }
   })
 })
-//Créer un profil utilisateur
-Router.post('/submitUser', (req, res) => {
+//Modifier un profil utilisateur
+Router.put('/submitUser', (req, res) => {
   const sql =
-    'INSERT INTO users (admin, blocked, firstname, lastname, password, email, phone, birthday, city, country, youtube, instagram, twitter, spotify, tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
+    'UPDATE users (admin, blocked, firstname, lastname, password, email, phone, birthday, city, country, youtube, instagram, twitter, spotify, tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
   const sql1 = 'INSERT INTO users_has_domain (users_id,domain_id) VALUES(?,?);'
   const sql2 =
     'INSERT INTO sub_domain_has_users (sub_domain_id,users_id) VALUES (?,?);'
