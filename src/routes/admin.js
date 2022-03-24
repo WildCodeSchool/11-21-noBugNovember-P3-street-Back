@@ -125,7 +125,7 @@ Router.get('/blocked_projects', (req, res) => {
 Router.get('/project_details_edit/:id', (req, res) => {
   const id = req.params.id
   sql =
-    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.localisation, p.youtubelink,r.region_name, d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id INNER JOIN region AS r ON p.region_id=r.id WHERE p.id= ?"
+    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.localisation, p.youtubelink,r.id,r.region_name, d.domain,u.firstname, u.lastname, u.avatar FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id INNER JOIN region AS r ON p.region_id=r.id WHERE p.id= ?"
 
   connection.query(sql, id, (err, result) => {
     console.log(id)
