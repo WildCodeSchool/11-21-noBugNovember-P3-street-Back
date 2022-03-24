@@ -139,6 +139,7 @@ Router.post('/submitUser', (req, res) => {
   })
 })
 
+//Créer une annonce utilisateur
 Router.post('/submitAnnonceUser', (req, res) => {
   const sql =
     'INSERT INTO annonces_dispo (description_annonce,date,users_id,blocked) VALUES (?,?,?,?)'
@@ -153,6 +154,7 @@ Router.post('/submitAnnonceUser', (req, res) => {
   })
 })
 
+//Créer une annonce projet
 Router.post('/submitAnnonceProject', (req, res) => {
   const sql =
     'INSERT INTO search_mate (role, description,date,project_id,blocked) VALUES (?,?,?,?,?)'
