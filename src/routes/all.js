@@ -2,11 +2,10 @@ const express = require('express')
 const connection = require('../helper/db.js')
 const functions = require('./models/functions')
 const multer = require('multer')
-const path = require('path');
+const path = require('path')
 const cors = require('cors')
 const Router = express.Router()
 
-<<<<<<< HEAD
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log('destination?')
@@ -15,15 +14,12 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     console.log('filename?')
     cb(null, file.originalname)
-  },
+  }
 })
 
 const upload = multer({ storage: storage })
 
 //Obtenir la listse des projets
-=======
-//Obtenir la liste des projets
->>>>>>> dev
 Router.get('/projects', (req, res) => {
   functions
     .projects()
@@ -200,10 +196,14 @@ Router.get('/regions', (req, res) => {
 
 Router.use(cors())
 
-Router.post('/image', upload.single('file'), function(req, res) {
-  res.json({})
+Router.post('/image', upload.single('file'), function (req, res) {
+  console.log(
+    'http://localhost:3030/' + req.file.destination + req.file.filename
+  )
+  res.json({
+    data: 'http://localhost:3030/' + req.file.destination + req.file.filename,
+    yolo: 'yolo'
+  })
 })
-
-
 
 module.exports = Router

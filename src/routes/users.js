@@ -1,6 +1,5 @@
 const express = require('express')
 const connection = require('../helper/db.js')
-<<<<<<< HEAD
 const dbHelper = require('./models/functions')
 const Router = express.Router()
 
@@ -48,8 +47,7 @@ Router.delete('/delete_account/:id', (req, res) => {
 
 
   module.exports = Router
-=======
-const Router = express.Router()
+
 const functions = require('./models/functions')
 
 //Créer un profil utilisateur
@@ -136,4 +134,3 @@ Router.post('/submitUser', (req, res) => {
 })
 
 module.exports = Router
->>>>>>> dev
