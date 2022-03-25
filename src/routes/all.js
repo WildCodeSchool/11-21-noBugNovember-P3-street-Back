@@ -70,6 +70,18 @@ Router.put('/project_creator', (req, res) => {
   })
 })
 
+//Obtenir les 3 projets terminés les plus récents
+Router.get('/last3projects', (req, res) => {
+  sql =
+    'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.blocked=0 AND p.status=2  ORDER BY p.id DESC LIMIT 3'
+  const value = [req.body.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
 //Obtenir les infos d'un utilisateur
 Router.put('/user', (req, res) => {
   functions
