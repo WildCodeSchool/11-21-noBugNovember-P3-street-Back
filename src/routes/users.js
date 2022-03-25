@@ -3,52 +3,58 @@ const connection = require('../helper/db.js')
 const dbHelper = require('./models/functions')
 const Router = express.Router()
 
+Router.put('/connect', (req, res) => {
+  const sql =
+    'SELECT id, firstname, admin FROM users WHERE email=? AND password=?'
+  const values = [req.body.email, req.body.password]
+
+  connection.query(sql, values, (err, result) => {
+    if (err) throw err
+    if (result.length === 0) {
+      res.status(404).send('error')
+    } else {
+      res.json(result)
+    }
+  })
+})
+
 Router.delete('/delete_account/:id', (req, res) => {
-    console.log("req.params.id")
-    dbHelper
-      .deleteUserProject(req.params.id)
-        .then((deleted) => {
-          if (deleted) {
-            dbHelper.deleteUserAnnonceDispo(req.params.id)
-              .then((deleted1) => {
-                if (deleted1) { 
-                  console.log('yoloooooo', deleted1)
-                }
-            // dbHelper.deleteUserOnly(req.params.id)
-            // .then((deleted1) => {
+  console.log('req.params.id')
+  dbHelper
+    .deleteUserProject(req.params.id)
+    .then(deleted => {
+      if (deleted) {
+        dbHelper.deleteUserAnnonceDispo(req.params.id).then(deleted1 => {
+          if (deleted1) {
+            console.log('yoloooooo', deleted1)
+          }
+          // dbHelper.deleteUserOnly(req.params.id)
+          // .then((deleted1) => {
           //       if (deleted) res.status(200).send('🎉 User deleted!');
           //       else res.status(404).send('User not found');
-              })
-          }
-          // else res.status(404).send('User not found');
-      })
-      .catch(err => {
-        console.error(err)
-        res.status(500).send('Error retrieving Account from database')
-      })
-  })
+        })
+      }
+      // else res.status(404).send('User not found');
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving Account from database')
+    })
+})
 
-  Router.post('users/createproject', (req, res) => {
-    console.log('found route')
-    dbHelper
-      .createProject(req.body)
-      .then(created => {
-        if (created) res.json(created)
-        else res.status(404).send('Project not found')
-      })
-      .catch(err => {
-        console.error(err)
-        res.status(500).send('Error retrieving project from database')
-      })
-  })
-
-
-
-
-
-  module.exports = Router
-
-const functions = require('./models/functions')
+Router.post('/createproject', (req, res) => {
+  console.log('found route')
+  dbHelper
+    .createProject(req.body)
+    .then(created => {
+      if (created) res.json(created)
+      else res.status(404).send('Project not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving project from database')
+    })
+})
 
 //Créer un profil utilisateur
 Router.post('/submitUser', (req, res) => {
@@ -129,6 +135,36 @@ Router.post('/submitUser', (req, res) => {
           })
         }
       })
+    }
+  })
+})
+
+//Créer une annonce utilisateur
+Router.post('/submitAnnonceUser', (req, res) => {
+  const sql =
+    'INSERT INTO annonces_dispo (description_annonce,date,users_id,blocked) VALUES (?,?,?,?)'
+  const { description_annonce, date, users_id, blocked } = req.body
+  let values = [description_annonce, date, users_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
+    }
+  })
+})
+
+//Créer une annonce projet
+Router.post('/submitAnnonceProject', (req, res) => {
+  const sql =
+    'INSERT INTO search_mate (role, description,date,project_id,blocked) VALUES (?,?,?,?,?)'
+  const { role, description, date, project_id, blocked } = req.body
+  let values = [role, description, date, project_id, blocked]
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      res.sendStatus(500)
+    } else {
+      res.status(200).json(result)
     }
   })
 })
