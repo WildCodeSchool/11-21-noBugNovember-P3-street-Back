@@ -20,7 +20,7 @@ app.use(express.json())
 
 app.use('/admin', admin)
 app.use('/all', all)
-app.use("/users", users);
+app.use('/users', users);
 app.use('/uploads', express.static('uploads'));  
 
 app.post('/createproject', (req, res) => {

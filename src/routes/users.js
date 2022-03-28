@@ -58,13 +58,20 @@ Router.post('/createproject', (req, res) => {
 
 //Récupérer profil utilisateur
 Router.get('/profil/:id', (req, res) => {
-  sql = 'SELECT * FROM users WHERE id=?'
-
-  connection.query(sql, (err, result) => {
-    if (err) throw err
-    return res.status(200).send(result)
-  })
-})
+  const userId = req.params.id;
+  connection.query(
+    'SELECT * FROM users WHERE id = ?',
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving a user from database');
+      } else {
+        res.json(result[0]);
+      }
+    }
+  );
+});
 
 //Créer un profil utilisateur
 Router.post('/submitUser', (req, res) => {
@@ -154,7 +161,7 @@ Router.post('/submitUser', (req, res) => {
 Router.put('/submitUser', (req, res) => {
   const sql =
     'UPDATE users (admin, blocked, firstname, lastname, password, email, phone, birthday, city, country, youtube, instagram, twitter, spotify, tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
-  const sql1 = 'INSERT INTO users_has_domain (users_id,domain_id) VALUES(?,?);'
+  const sql1 = 'Update users_has_domain (users_id,domain_id) VALUES(?,?);'
   const sql2 =
     'INSERT INTO sub_domain_has_users (sub_domain_id,users_id) VALUES (?,?);'
 
@@ -263,6 +270,26 @@ Router.post('/submitAnnonceProject', (req, res) => {
       res.status(200).json(result)
     }
   })
+})
+
+//Modifier un profil user
+Router.put('/update_profil/:id', (req, res) => {
+  const profilPropsToUpdate = req.body
+  const profilId = req.params.id
+  connection.query(
+    'UPDATE users SET ? WHERE id=?',
+    [profilPropsToUpdate, profilId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error updating an announcement')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`Announcement with id ${profilId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
 })
 
 module.exports = Router
