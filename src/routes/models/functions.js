@@ -242,9 +242,27 @@ const addUserInProject = ({ project_id, users_id }) => {
     })
 }
 
+const existingUser = ({ email, password }) => {
+  return db
+    .query(
+      'SELECT id, firstname, admin FROM users WHERE email=? AND password=?',
+      [email, password]
+    )
+    .then(([results]) => results[0])
+}
+
+const isAdmin = ({ id }) => {
+  return db
+    .query('SELECT admin FROM users WHERE id=?', [id])
+    .then(([results]) => results[0])
+}
+
 module.exports = {
   addUserInProject,
   allusers,
+  createProject,
+  deleteUserOnly,
+  deleteUserProject,
   displayBlockedUsers,
   displayUsers,
   displayValidatedUsers,
@@ -256,13 +274,10 @@ module.exports = {
   findProject,
   findUser,
   findUserInProject,
+  isAdmin,
   projects,
-  validate,
-  deleteUserProject,
-  deleteUserOnly,
-  createProject,
-  validateProject,
   projectshasusers,
   validate,
+  validateProject,
   validateUsersInProject
 }

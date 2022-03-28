@@ -1,12 +1,12 @@
 const cors = require('cors')
-const express = require('express') // <-----------
-const morgan = require('morgan') // ----
-//const fetch = require('node-fetch')
+const express = require('express')
+const morgan = require('morgan')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
 const admin = require('./src/routes/admin.js')
 const all = require('./src/routes/all.js')
+const auth = require('./src/routes/auth.js')
 const users = require('./src/routes/users.js')
 const dbHelper = require('./src/routes/models/functions')
 
@@ -14,11 +14,13 @@ const app = express()
 
 app.use(cors())
 app.use('/public', express.static('public'))
+app.use('/images', express.static('images'))
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.use('/admin', admin)
+app.use('/auth', auth)
 app.use('/all', all)
 app.use('/users', users);
 app.use('/uploads', express.static('uploads'));  
