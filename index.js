@@ -14,7 +14,7 @@ const app = express()
 
 app.use(cors())
 app.use('/public', express.static('public'))
-app.use('/images', express.static('images'))
+app.use('/assets', express.static('assets'))
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
