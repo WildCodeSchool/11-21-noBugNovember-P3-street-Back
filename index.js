@@ -14,6 +14,7 @@ const app = express()
 
 app.use(cors())
 app.use('/public', express.static('public'))
+app.use('/images', express.static('images'))
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -23,7 +24,6 @@ app.use('/all', all)
 app.use('/auth', auth)
 app.use('/users', users)
 app.use('/uploads', express.static('uploads'))
-app.use('/users', users)
 
 let server = app.listen(3030, () => {
   console.log('listening on port', server.address().port)

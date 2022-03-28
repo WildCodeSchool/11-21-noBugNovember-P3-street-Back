@@ -70,6 +70,18 @@ Router.put('/project_creator', (req, res) => {
   })
 })
 
+//Obtenir les 3 projets terminés les plus récents
+Router.get('/last3projects', (req, res) => {
+  sql =
+    'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.blocked=0 AND p.status=2  ORDER BY p.id DESC LIMIT 3'
+  const value = [req.body.id]
+
+  connection.query(sql, value, (err, result) => {
+    if (err) throw err
+    return res.status(200).send(result)
+  })
+})
+
 //Obtenir les infos d'un utilisateur
 Router.put('/user', (req, res) => {
   functions
@@ -101,7 +113,21 @@ Router.get('/allusers', (req, res) => {
 //Avoir toutes les annonces de tous les utilisateurs
 Router.get('/annonces_all_users', (req, res) => {
   functions
-    .findAnnoncesUsers()
+    .findValidatedAnnoncesUsers()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonces not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonces from database')
+    })
+})
+
+//Avoir toutes les annonces de tous les utilisateurs
+Router.get('/annonces_users_blocked', (req, res) => {
+  functions
+    .findNonValidatedAnnoncesUsers()
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('Annonces not found')
@@ -129,7 +155,21 @@ Router.get('/annonce_users', (req, res) => {
 //Afficher les annonces des projets
 Router.get('/annonces_all_projects', (req, res) => {
   functions
-    .findAnnoncesProjects()
+    .findValidatedAnnoncesProjects()
+    .then(user => {
+      if (user) res.json(user)
+      else res.status(404).send('Annonces not found')
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Error retrieving annonce from database')
+    })
+})
+
+//Afficher les annonces des projets
+Router.get('/annonces_projects_blocked', (req, res) => {
+  functions
+    .findNonValidatedAnnoncesProjects()
     .then(user => {
       if (user) res.json(user)
       else res.status(404).send('Annonces not found')
