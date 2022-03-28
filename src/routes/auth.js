@@ -6,6 +6,7 @@ const functions = require('./models/functions')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const decode = require('jsonwebtoken/decode')
+const jwt_decode = require('jwt-decode')
 
 const getToken = req => {
   if (
@@ -20,6 +21,24 @@ const getToken = req => {
 }
 
 //routes
+Router.post('/protected_admin', (req, res) => {
+  const token = getToken(req)
+  jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
+    if (err) {
+      return res.status(403).send({ acces: false })
+    } else {
+      let id = jwt_decode(token)
+      functions.isAdmin(id).then(tmts => {
+        if (tmts.admin === 1) {
+          return res.status(200).send({ acces: true })
+        } else {
+          return res.status(403).send({ acces: false })
+        }
+      })
+    }
+  })
+})
+
 Router.post('/protected', (req, res) => {
   const token = getToken(req)
   console.log(token)
