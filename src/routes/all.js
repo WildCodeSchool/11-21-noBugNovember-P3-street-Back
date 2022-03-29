@@ -9,7 +9,7 @@ const Router = express.Router()
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log('destination?')
-    cb(null, 'images/')
+    cb(null, 'assets/')
   },
   filename: (req, file, cb) => {
     console.log('filename?')
@@ -238,7 +238,9 @@ Router.get('/regions', (req, res) => {
 Router.use(cors())
 
 Router.post('/image', upload.single('file'), function (req, res) {
-  res.json({})
+  res.json({
+    data: 'http://localhost:3030/' + req.file.destination + req.file.filename
+  })
 })
 
 module.exports = Router
