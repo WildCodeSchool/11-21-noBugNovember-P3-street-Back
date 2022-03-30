@@ -79,6 +79,7 @@ Router.post('/submitUser', (req, res) => {
     instagram,
     twitter,
     spotify,
+    tiktok,
     forget_password,
     available,
     phoneVisibility,
@@ -103,6 +104,7 @@ Router.post('/submitUser', (req, res) => {
     instagram,
     twitter,
     spotify,
+    tiktok,
     forget_password,
     available,
     phoneVisibility,
@@ -172,18 +174,16 @@ Router.post('/submitAnnonceProject', (req, res) => {
 //Récupérer profil utilisateur
 Router.get('/profil/:id', (req, res) => {
   const userId = req.params.id
-  connection.query(
-    'SELECT * FROM users WHERE id = ?',
-    [userId],
-    (err, result) => {
-      if (err) {
-        console.error(err)
-        res.status(500).send('Error retrieving a user from database')
-      } else {
-        res.json(result[0])
-      }
+  const sql =
+    'SELECT u.avatar, u.birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?'
+  connection.query(sql, userId, (err, result) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send('Error retrieving a user from database')
+    } else {
+      res.json(result[0])
     }
-  )
+  })
 })
 
 //Modifier un profil user
