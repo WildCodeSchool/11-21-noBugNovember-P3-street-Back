@@ -175,7 +175,7 @@ Router.post('/submitAnnonceProject', (req, res) => {
 Router.get('/profil/:id', (req, res) => {
   const userId = req.params.id
   const sql =
-    'SELECT u.avatar, u.birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?'
+    "SELECT u.avatar, DATE_FORMAT(u.birthday, '%d/%m/%Y') AS birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?"
   connection.query(sql, userId, (err, result) => {
     if (err) {
       console.error(err)
