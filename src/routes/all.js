@@ -238,7 +238,7 @@ Router.use(cors())
 
 Router.post('/image', upload.single('file'), function (req, res) {
   res.json({
-    data: 'http://localhost:3030/' + req.file.destination + req.file.filename
+    data: req.file.destination + req.file.filename
   })
 })
 
