@@ -245,7 +245,7 @@ const addUserInProject = ({ project_id, users_id }) => {
 const existingUser = ({ email, password }) => {
   return db
     .query(
-      'SELECT id, firstname, admin FROM users WHERE email=? AND password=?',
+      'SELECT id, firstname, blocked FROM users WHERE email=? AND password=? AND blocked=0',
       [email, password]
     )
     .then(([results]) => results[0])
@@ -266,6 +266,7 @@ module.exports = {
   displayBlockedUsers,
   displayUsers,
   displayValidatedUsers,
+  existingUser,
   findValidatedAnnoncesUsers,
   findNonValidatedAnnoncesUsers,
   findAnnonceUser,
