@@ -53,9 +53,9 @@ Router.post('/protected', (req, res) => {
 
 Router.post('/login', async (req, res) => {
   const { password, email } = req.body
-  //------------------------------------------------------------//
-  //-------test si l'email user et present dans la bdd ---------//
-  //------------------------------------------------------------//
+  //------------------------------------------------------------------------//
+  //-------test si l'email et le password sont present dans la bdd ---------//
+  //------------------------------------------------------------------------//
 
   functions
     .existingUser({ email, password })
@@ -75,24 +75,5 @@ Router.post('/login', async (req, res) => {
       console.error(err)
       res.status(500).send('Error retrieving user from database')
     })
-  /*
-	if (username === "coco@gmail.com") {
-		const hashedPassword =
-			"$2b$10$2J8Z6E32YMmf8WeQf7jzUuQl9dmlC9Ok.mZLIFTuk.0o8J/qrHL/i"
-		const verifyedPassword = await bcrypt.compare(password, hashedPassword)
-		// console.log(verifyedPassword)
-		if (verifyedPassword) {
-			const tokenUserinfo = {
-				username: username,
-				status: "PouletMaster",
-			}
-			const token = jwt.sign(tokenUserinfo, process.env.JWT_SECRET)
-			console.log(token)
-			res.header("Access-Control-Expose-Headers", "x-access-token")
-			res.set("x-access-token", token)
-			res.status(200).send({ mess: "user connected" })
-		}
-	}
-  */
 })
 module.exports = Router
