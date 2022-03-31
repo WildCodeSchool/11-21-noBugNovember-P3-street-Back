@@ -134,6 +134,32 @@ Router.get('/project_details_edit/:id', (req, res) => {
   })
 })
 
+//Obtenir les détails d'une annonce user
+Router.get('/annonceuser_details_edit/:id', (req, res) => {
+  const id = req.params.id
+  sql =
+    'SELECT ad.description_annonce, ad.date, u.avatar, u.firstname, u.lastname FROM annonces_dispo AS ad INNER JOIN users AS u ON u.id = ad.users_id WHERE ad.id=?'
+
+  connection.query(sql, id, (err, result) => {
+    console.log(id)
+    if (err) throw err
+    return res.status(200).send(result[0])
+  })
+})
+
+//Obtenir les détails d'une annonce projet
+Router.get('/annonceprojet_details_edit/:id', (req, res) => {
+  const id = req.params.id
+  sql =
+    'SELECT sm.role,sm.description,sm.date, p.name FROM search_mate AS sm INNER JOIN project AS p ON p.id = sm.project_id WHERE sm.id=?'
+
+  connection.query(sql, id, (err, result) => {
+    console.log(id)
+    if (err) throw err
+    return res.status(200).send(result[0])
+  })
+})
+
 // Bloquer ou débloquer un projet
 Router.put('/projects/:id', (req, res) => {
   const projectId = req.params.id
@@ -268,6 +294,7 @@ Router.put('/update_status/:id', (req, res) => {
   })
 })
 
+//Modifier un projet
 Router.put('/edit_project/:id', (req, res) => {
   const id = req.params.id
   const newAttribut = req.body
@@ -277,7 +304,41 @@ Router.put('/edit_project/:id', (req, res) => {
   connection.query(sql, values, (err, result) => {
     if (err) {
       console.log(err)
-      res.status(500).send('Error updating an album')
+      res.status(500).send('Error updating a project')
+    } else {
+      res.status(204).json(result)
+    }
+  })
+})
+
+//Modifier l'annonce d'un utilisateur
+Router.put('/edit_annonce_user/:id', (req, res) => {
+  const id = req.params.id
+  const newAttribut = req.body
+  const values = [newAttribut, id]
+  const sql = 'UPDATE annonces_dispo SET ?  WHERE id = ?'
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an annoucement')
+    } else {
+      res.status(204).json(result)
+    }
+  })
+})
+
+//Modifier l'annonce d'un utilisateur
+Router.put('/edit_annonce_project/:id', (req, res) => {
+  const id = req.params.id
+  const newAttribut = req.body
+  const values = [newAttribut, id]
+  const sql = 'UPDATE search_mate SET ?  WHERE id = ?'
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err)
+      res.status(500).send('Error updating an annoucement')
     } else {
       res.status(204).json(result)
     }
