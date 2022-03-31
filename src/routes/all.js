@@ -37,7 +37,7 @@ Router.get('/projects', (req, res) => {
 Router.get('/project_details/:id', (req, res) => {
   const id = req.params.id
   sql =
-    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.youtubelink,  d.domain,u.firstname, u.lastname, u.avatar, r.region_name FROM project AS p INNER JOIN region AS r ON p.region_id=r.id INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id=?"
+    "SELECT p.id, p.name, p.logo, DATE_FORMAT(p.estimated_start_date,'%d/%m/%Y') AS date_start, DATE_FORMAT(p.estimated_end_date,'%d/%m/%Y') AS date_end, p.description, p.status, p.localisation, p.youtubelink,  d.domain, u.firstname, u.lastname, u.avatar, u.id AS idUser FROM project AS p INNER JOIN users AS u ON u.id=p.users_id INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.id= ?"
 
   connection.query(sql, id, (err, result) => {
     console.log(id)
