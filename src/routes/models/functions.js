@@ -280,5 +280,6 @@ module.exports = {
   projectshasusers,
   validate,
   validateProject,
-  validateUsersInProject
+  validateUsersInProject,
+  existingUser
 }

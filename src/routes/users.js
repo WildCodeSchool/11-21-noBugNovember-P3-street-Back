@@ -59,7 +59,7 @@ Router.post('/createproject', (req, res) => {
 //Créer un profil utilisateur
 Router.post('/submitUser', (req, res) => {
   const sql =
-    'INSERT INTO users (admin, blocked, firstname, lastname, password, email, phone,birthday, city, country,youtube, instagram, twitter, spotify, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
+    'INSERT INTO users (admin, blocked, firstname, lastname, password, email, phone,birthday, city, country,youtube, instagram, twitter, spotify,tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
   const sql1 = 'INSERT INTO users_has_domain (users_id,domain_id) VALUES(?,?);'
   const sql2 =
     'INSERT INTO sub_domain_has_users (sub_domain_id,users_id) VALUES (?,?);'
@@ -79,6 +79,7 @@ Router.post('/submitUser', (req, res) => {
     instagram,
     twitter,
     spotify,
+    tiktok,
     forget_password,
     available,
     phoneVisibility,
@@ -103,6 +104,7 @@ Router.post('/submitUser', (req, res) => {
     instagram,
     twitter,
     spotify,
+    tiktok,
     forget_password,
     available,
     phoneVisibility,
@@ -167,6 +169,41 @@ Router.post('/submitAnnonceProject', (req, res) => {
       res.status(200).json(result)
     }
   })
+})
+
+//Récupérer profil utilisateur
+Router.get('/profil/:id', (req, res) => {
+  const userId = req.params.id
+  const sql =
+    'SELECT u.avatar, u.birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?'
+  connection.query(sql, userId, (err, result) => {
+    if (err) {
+      console.error(err)
+      res.status(500).send('Error retrieving a user from database')
+    } else {
+      res.json(result[0])
+    }
+  })
+})
+
+//Modifier un profil user
+Router.put('/update_profil/:id', (req, res) => {
+  const profilPropsToUpdate = req.body
+  const profilId = req.params.id
+  connection.query(
+    'UPDATE users SET ? WHERE id=?',
+    [profilPropsToUpdate, profilId],
+    (err, result) => {
+      if (err) {
+        console.log(err)
+        res.status(500).send('Error updating an announcement')
+      } else if (result.affectedRows === 0) {
+        res.status(404).send(`Announcement with id ${profilId} not found.`)
+      } else {
+        res.sendStatus(200)
+      }
+    }
+  )
 })
 
 module.exports = Router
