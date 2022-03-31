@@ -28,13 +28,8 @@ Router.delete('/delete_account/:id', (req, res) => {
           if (deleted1) {
             console.log('yoloooooo', deleted1)
           }
-          // dbHelper.deleteUserOnly(req.params.id)
-          // .then((deleted1) => {
-          //       if (deleted) res.status(200).send('🎉 User deleted!');
-          //       else res.status(404).send('User not found');
         })
       }
-      // else res.status(404).send('User not found');
     })
     .catch(err => {
       console.error(err)
