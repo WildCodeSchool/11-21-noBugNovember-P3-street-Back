@@ -57,7 +57,7 @@ const findProject = id => {
 const projects = id => {
   return db
     .query(
-      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id WHERE p.blocked=0 ORDER BY p.id DESC'
+      'SELECT p.id, p.name, p.logo, p.estimated_start_date, p.estimated_end_date, p.description, p.team_completed, p.status, p.localisation, d.domain, r.region_name FROM project AS p INNER JOIN domain AS d ON d.id=p.domain_id INNER JOIN region AS r ON r.id=p.region_id WHERE p.blocked=0 ORDER BY p.id DESC'
     )
     .then(([results]) => results)
 }
