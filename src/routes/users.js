@@ -28,13 +28,8 @@ Router.delete('/delete_account/:id', (req, res) => {
           if (deleted1) {
             console.log('yoloooooo', deleted1)
           }
-          // dbHelper.deleteUserOnly(req.params.id)
-          // .then((deleted1) => {
-          //       if (deleted) res.status(200).send('🎉 User deleted!');
-          //       else res.status(404).send('User not found');
         })
       }
-      // else res.status(404).send('User not found');
     })
     .catch(err => {
       console.error(err)
@@ -59,7 +54,7 @@ Router.post('/createproject', (req, res) => {
 //Créer un profil utilisateur
 Router.post('/submitUser', (req, res) => {
   const sql =
-    'INSERT INTO users (admin, blocked, firstname, lastname, password, email, phone,birthday, city, country,youtube, instagram, twitter, spotify,tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
+    'INSERT INTO users (admin, blocked, firstname, lastname, password, email, phone,birthday, city, country,youtube, instagram, twitter, spotify,tiktok, forget_password, available, phoneVisibility, emailVisibility, description_users) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);'
   const sql1 = 'INSERT INTO users_has_domain (users_id,domain_id) VALUES(?,?);'
   const sql2 =
     'INSERT INTO sub_domain_has_users (sub_domain_id,users_id) VALUES (?,?);'
@@ -175,7 +170,7 @@ Router.post('/submitAnnonceProject', (req, res) => {
 Router.get('/profil/:id', (req, res) => {
   const userId = req.params.id
   const sql =
-    'SELECT u.avatar, u.birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?'
+    "SELECT u.avatar, DATE_FORMAT(u.birthday, '%d/%m/%Y') AS birthday, u.city, u.country,u.city, u.description_users, u.email, u.firstname, u.lastname, u.nickname, u.phone, u.spotify, u.instagram,u.tiktok,u.twitter,u.youtube, d.domain, sd.art_name FROM users AS u INNER JOIN domain AS d INNER JOIN users_has_domain as uhd ON u.id=uhd.users_id INNER JOIN sub_domain_has_users as sdhu INNER JOIN sub_domain as sd ON sd.id=sdhu.sub_domain_id  WHERE u.id = ?"
   connection.query(sql, userId, (err, result) => {
     if (err) {
       console.error(err)
