@@ -17,6 +17,7 @@ Dans les deux dossiers :
 /!\ Penser à configurer vos variables d'environnement (fichier .env)
 en suivant l'exemple du fichier .env.sample
 Pour le back, dans le fichier .env, penser à bien configurer le JWT_SECRET
+Par ailleurs, pensez à installer la base de donnée, fourni dans le fichier bdd.sql.
 
 ```bash
   npm start //pour lancer le projet sur votre serveur local
